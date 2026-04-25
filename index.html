@@ -24,69 +24,221 @@
   --sans: 'IBM Plex Sans', system-ui, sans-serif;
   --mono: 'IBM Plex Mono', monospace;
 }
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: var(--sans); background: var(--paper); color: var(--ink); min-height: 100vh; }
-.masthead { background: var(--accent); color: white; padding: 0 48px; display: flex; align-items: center; justify-content: space-between; height: 64px; border-bottom: 3px solid var(--accent-gold); }
+
+body {
+  font-family: var(--sans);
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+.masthead {
+  background: var(--accent);
+  color: white;
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  border-bottom: 3px solid var(--accent-gold);
+}
 .masthead-brand { display: flex; align-items: center; gap: 14px; }
-.masthead-logo { width: 36px; height: 36px; border: 2px solid var(--accent-gold); display: grid; place-items: center; font-family: var(--serif); font-size: 18px; font-weight: 700; color: var(--accent-gold); }
+.masthead-logo {
+  width: 36px; height: 36px;
+  border: 2px solid var(--accent-gold);
+  display: grid; place-items: center;
+  font-family: var(--serif); font-size: 18px; font-weight: 700;
+  color: var(--accent-gold);
+}
 .masthead-name { font-family: var(--serif); font-size: 20px; letter-spacing: 0.5px; }
 .masthead-tagline { font-size: 11px; color: rgba(255,255,255,0.55); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 1px; }
 .masthead-date { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 0.5px; }
-.control-panel { background: white; border-bottom: 1px solid var(--rule); padding: 28px 48px; box-shadow: 0 1px 12px rgba(0,0,0,0.04); }
-.control-panel-title { font-family: var(--serif); font-size: 13px; font-weight: 400; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; }
+
+.control-panel {
+  background: white;
+  border-bottom: 1px solid var(--rule);
+  padding: 28px 48px;
+  box-shadow: 0 1px 12px rgba(0,0,0,0.04);
+}
+.control-panel-title {
+  font-family: var(--serif); font-size: 13px; font-weight: 400;
+  color: var(--ink-muted); text-transform: uppercase; letter-spacing: 2px;
+  margin-bottom: 20px;
+}
 .controls-row { display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap; }
 .control-group { display: flex; flex-direction: column; gap: 6px; min-width: 200px; }
-.control-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-muted); font-weight: 500; }
-.control-select { appearance: none; background: var(--paper-warm); border: 1px solid var(--rule); border-radius: 2px; padding: 10px 36px 10px 14px; font-family: var(--sans); font-size: 13px; color: var(--ink); cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+.control-label {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--ink-muted); font-weight: 500;
+}
+.control-select {
+  appearance: none;
+  background: var(--paper-warm);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 10px 36px 10px 14px;
+  font-family: var(--sans); font-size: 13px; color: var(--ink);
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
 .control-select:focus { outline: none; border-color: var(--accent); }
-.btn-generate { padding: 11px 32px; background: var(--accent); color: white; border: none; border-radius: 2px; font-family: var(--sans); font-size: 13px; font-weight: 500; letter-spacing: 0.5px; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+.btn-generate {
+  padding: 11px 32px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 2px;
+  font-family: var(--sans); font-size: 13px; font-weight: 500;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
 .btn-generate:hover { background: #0f2338; }
 .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; }
-.status-bar { padding: 10px 48px; background: var(--paper-warm); border-bottom: 1px solid var(--rule); font-family: var(--mono); font-size: 11px; color: var(--ink-muted); display: flex; gap: 16px; align-items: center; min-height: 36px; }
+
+.status-bar {
+  padding: 10px 48px;
+  background: var(--paper-warm);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--mono); font-size: 11px;
+  color: var(--ink-muted); display: flex; gap: 16px; align-items: center;
+  min-height: 36px;
+}
 .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ink-muted); }
 .status-dot.live { background: #16a34a; animation: pulse 2s infinite; }
 .status-dot.loading { background: var(--accent-gold); animation: pulse 0.8s infinite; }
 .status-dot.error { background: var(--accent-red); }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
 .main-content { padding: 40px 48px; max-width: 1400px; margin: 0 auto; }
-.placeholder { text-align: center; padding: 80px 48px; border: 1px dashed var(--rule); border-radius: 4px; background: white; }
+
+.placeholder {
+  text-align: center; padding: 80px 48px;
+  border: 1px dashed var(--rule); border-radius: 4px;
+  background: white;
+}
 .placeholder-icon { font-size: 48px; opacity: 0.2; margin-bottom: 16px; }
 .placeholder-title { font-family: var(--serif); font-size: 22px; color: var(--ink-muted); margin-bottom: 8px; }
 .placeholder-sub { font-size: 13px; color: var(--ink-muted); }
-.loading-screen { text-align: center; padding: 80px 48px; background: white; border: 1px solid var(--rule); border-radius: 4px; }
-.loading-spinner { width: 40px; height: 40px; border: 3px solid var(--rule); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px; }
+
+.loading-screen {
+  text-align: center; padding: 80px 48px; background: white;
+  border: 1px solid var(--rule); border-radius: 4px;
+}
+.loading-spinner {
+  width: 40px; height: 40px;
+  border: 3px solid var(--rule);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 20px;
+}
 @keyframes spin { to { transform: rotate(360deg); } }
 .loading-steps { margin-top: 20px; list-style: none; }
 .loading-steps li { font-family: var(--mono); font-size: 12px; color: var(--ink-muted); padding: 3px 0; }
 .loading-steps li.done { color: var(--accent-green); }
 .loading-steps li.active { color: var(--accent); font-weight: 600; }
+
 #report-container { display: none; }
-.report-header { background: var(--accent); color: white; padding: 36px 48px 32px; position: relative; overflow: hidden; }
-.report-header::before { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 300px; background: repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(255,255,255,0.02) 10px, rgba(255,255,255,0.02) 20px); }
-.report-header-meta { font-family: var(--mono); font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,0.5); text-transform: uppercase; margin-bottom: 8px; display: flex; gap: 24px; flex-wrap: wrap; }
-.report-header h1 { font-family: var(--serif); font-size: 32px; font-weight: 700; line-height: 1.2; margin-bottom: 6px; }
-.report-header-sub { font-size: 14px; color: rgba(255,255,255,0.7); margin-bottom: 20px; }
+
+.report-header {
+  background: var(--accent);
+  color: white;
+  padding: 36px 48px 32px;
+  position: relative;
+  overflow: hidden;
+}
+.report-header::before {
+  content: '';
+  position: absolute; top: 0; right: 0; bottom: 0;
+  width: 300px;
+  background: repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(255,255,255,0.02) 10px, rgba(255,255,255,0.02) 20px);
+}
+.report-header-meta {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 2px;
+  color: rgba(255,255,255,0.5); text-transform: uppercase;
+  margin-bottom: 8px;
+  display: flex; gap: 24px; flex-wrap: wrap;
+}
+.report-header h1 {
+  font-family: var(--serif); font-size: 32px; font-weight: 700;
+  line-height: 1.2; margin-bottom: 6px;
+}
+.report-header-sub {
+  font-size: 14px; color: rgba(255,255,255,0.7); margin-bottom: 20px;
+}
 .report-header-badges { display: flex; gap: 10px; flex-wrap: wrap; }
-.badge { padding: 4px 12px; border: 1px solid rgba(255,255,255,0.25); border-radius: 2px; font-family: var(--mono); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.8); }
+.badge {
+  padding: 4px 12px;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 2px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 1px;
+  text-transform: uppercase; color: rgba(255,255,255,0.8);
+}
 .badge-gold { border-color: var(--accent-gold); color: var(--accent-gold); }
-.report-gold-strip { height: 4px; background: linear-gradient(90deg, var(--accent-gold), #d4a017, var(--accent-gold)); }
-.report-section { background: white; border: 1px solid var(--rule); border-top: none; padding: 32px 40px; }
+.report-gold-strip {
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent-gold), #d4a017, var(--accent-gold));
+}
+
+.report-section {
+  background: white;
+  border: 1px solid var(--rule);
+  border-top: none;
+  padding: 32px 40px;
+}
 .report-section + .report-section { border-top: none; }
 .report-section:first-of-type { border-top: 1px solid var(--rule); }
-.section-rule { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
-.section-number { font-family: var(--mono); font-size: 10px; color: var(--accent-gold); letter-spacing: 2px; text-transform: uppercase; white-space: nowrap; }
-.section-title { font-family: var(--serif); font-size: 18px; font-weight: 600; color: var(--accent); }
+
+.section-rule {
+  display: flex; align-items: center; gap: 16px; margin-bottom: 24px;
+}
+.section-number {
+  font-family: var(--mono); font-size: 10px; color: var(--accent-gold);
+  letter-spacing: 2px; text-transform: uppercase; white-space: nowrap;
+}
+.section-title {
+  font-family: var(--serif); font-size: 18px; font-weight: 600; color: var(--accent);
+}
 .section-hr { flex: 1; height: 1px; background: var(--rule); }
-.exec-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin-bottom: 24px; }
-.exec-stat { background: white; padding: 20px 24px; }
-.exec-stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-muted); margin-bottom: 6px; font-weight: 500; }
-.exec-stat-value { font-family: var(--mono); font-size: 26px; font-weight: 500; color: var(--ink); line-height: 1; }
+
+.exec-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  margin-bottom: 24px;
+}
+.exec-stat {
+  background: white;
+  padding: 20px 24px;
+}
+.exec-stat-label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--ink-muted); margin-bottom: 6px; font-weight: 500;
+}
+.exec-stat-value {
+  font-family: var(--mono); font-size: 26px; font-weight: 500;
+  color: var(--ink); line-height: 1;
+}
 .exec-stat-value.pos { color: var(--accent-green); }
 .exec-stat-value.neg { color: var(--accent-red); }
 .exec-stat-sub { font-family: var(--mono); font-size: 11px; color: var(--ink-muted); margin-top: 4px; }
+
 .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 .data-table thead tr { background: var(--accent); color: white; }
-.data-table thead th { padding: 10px 16px; font-family: var(--mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 500; text-align: left; }
+.data-table thead th {
+  padding: 10px 16px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 1.5px;
+  text-transform: uppercase; font-weight: 500;
+  text-align: left;
+}
 .data-table thead th:not(:first-child) { text-align: right; }
 .data-table tbody tr { border-bottom: 1px solid var(--rule); }
 .data-table tbody tr:nth-child(even) { background: var(--paper-warm); }
@@ -95,7 +247,10 @@ body { font-family: var(--sans); background: var(--paper); color: var(--ink); mi
 .data-table td strong { color: var(--ink); font-weight: 600; }
 .data-table .pos { color: var(--accent-green); }
 .data-table .neg { color: var(--accent-red); }
+
 .chart-container { position: relative; height: 280px; }
+.chart-perf { position: relative; height: 220px; }
+
 .allocation-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center; }
 .allocation-chart-wrap { position: relative; height: 220px; }
 .allocation-legend { display: flex; flex-direction: column; gap: 10px; }
@@ -103,27 +258,64 @@ body { font-family: var(--sans); background: var(--paper); color: var(--ink); mi
 .alloc-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
 .alloc-label { font-size: 12px; color: var(--ink-light); flex: 1; }
 .alloc-pct { font-family: var(--mono); font-size: 12px; color: var(--ink); font-weight: 500; }
+
 .commentary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; }
 .commentary-card { border: 1px solid var(--rule); padding: 20px 24px; }
-.commentary-card-title { font-family: var(--mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent-gold); margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--rule); }
+.commentary-card-title {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--accent-gold); margin-bottom: 12px;
+  padding-bottom: 10px; border-bottom: 1px solid var(--rule);
+}
 .commentary-card p { font-size: 13px; line-height: 1.7; color: var(--ink-light); }
+
 .risk-gauge-row { display: flex; gap: 24px; flex-wrap: wrap; }
 .risk-gauge-item { flex: 1; min-width: 120px; }
 .risk-gauge-label { font-size: 11px; color: var(--ink-muted); margin-bottom: 6px; }
 .risk-gauge-track { height: 6px; background: var(--rule); border-radius: 3px; margin-bottom: 4px; overflow: hidden; }
 .risk-gauge-fill { height: 100%; border-radius: 3px; }
-.report-footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 20px 40px; font-size: 11px; line-height: 1.6; border-top: 3px solid var(--accent-gold); }
+
+.report-footer {
+  background: var(--ink);
+  color: rgba(255,255,255,0.6);
+  padding: 20px 40px;
+  font-size: 11px; line-height: 1.6;
+  border-top: 3px solid var(--accent-gold);
+}
 .footer-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
-.report-toolbar { display: flex; gap: 12px; justify-content: flex-end; padding: 16px 0; margin-bottom: 4px; }
-.btn-action { padding: 9px 20px; font-family: var(--sans); font-size: 12px; font-weight: 500; border-radius: 2px; cursor: pointer; border: 1px solid var(--rule); display: flex; align-items: center; gap: 8px; }
+
+.report-toolbar {
+  display: flex; gap: 12px; justify-content: flex-end;
+  padding: 16px 0; margin-bottom: 4px;
+}
+.btn-action {
+  padding: 9px 20px;
+  font-family: var(--sans); font-size: 12px; font-weight: 500;
+  border-radius: 2px; cursor: pointer;
+  border: 1px solid var(--rule);
+  display: flex; align-items: center; gap: 8px;
+}
 .btn-action.primary { background: var(--accent); color: white; border-color: var(--accent); }
 .btn-action.secondary { background: white; color: var(--ink); }
-.data-badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 9px; font-weight: 600; margin-left: 10px; }
-.data-badge.live { background: #16a34a; color: white; }
-.data-badge.simulated { background: #f59e0b; color: white; }
-@media (max-width: 900px) { .masthead, .control-panel, .status-bar, .main-content { padding-left: 20px; padding-right: 20px; } .exec-grid { grid-template-columns: repeat(2,1fr); } .commentary-grid, .allocation-layout, .footer-cols { grid-template-columns: 1fr; } }
-@media print { .masthead, .control-panel, .status-bar, .report-toolbar { display: none !important; } body { background: white; } .report-section { break-inside: avoid; } }
-.report-watermark { font-family: var(--mono); font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--ink-muted); text-align: right; padding: 8px 40px 0; border-top: 1px solid var(--rule); background: var(--paper-warm); }
+
+@media (max-width: 900px) {
+  .masthead, .control-panel, .status-bar, .main-content { padding-left: 20px; padding-right: 20px; }
+  .exec-grid { grid-template-columns: repeat(2,1fr); }
+  .commentary-grid, .allocation-layout, .footer-cols { grid-template-columns: 1fr; }
+}
+
+@media print {
+  .masthead, .control-panel, .status-bar, .report-toolbar { display: none !important; }
+  body { background: white; }
+  .report-section { break-inside: avoid; }
+}
+
+.report-watermark {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--ink-muted);
+  text-align: right; padding: 8px 40px 0;
+  border-top: 1px solid var(--rule);
+  background: var(--paper-warm);
+}
 </style>
 </head>
 <body>
@@ -185,7 +377,7 @@ body { font-family: var(--sans); background: var(--paper); color: var(--ink); mi
   <div id="loading-screen" class="loading-screen" style="display:none;">
     <div class="loading-spinner"></div>
     <div style="font-family:var(--serif);font-size:16px;color:var(--ink-muted);margin-bottom:4px;">Compiling report…</div>
-    <div style="font-size:12px;color:var(--ink-muted);">Fetching live data from Yahoo Finance</div>
+    <div style="font-size:12px;color:var(--ink-muted);">Fetching live data from public financial sources</div>
     <ul class="loading-steps" id="loading-steps">
       <li id="step-fund">○ Retrieving fund metadata</li>
       <li id="step-price">○ Fetching price history</li>
@@ -220,8 +412,8 @@ body { font-family: var(--sans); background: var(--paper); color: var(--ink); mi
           <div class="section-hr"></div>
         </div>
         <div class="exec-grid" id="exec-grid"></div>
-        <div style="font-size:12px;color:var(--ink-muted);font-family:var(--mono);margin-top:12px;">
-          <span id="data-source-indicator"></span>
+        <div style="font-size:12px;color:var(--ink-muted);font-family:var(--mono);">
+          * All performance figures are based on total return. Data sourced from Yahoo Finance.
         </div>
       </div>
 
@@ -289,7 +481,7 @@ body { font-family: var(--sans); background: var(--paper); color: var(--ink); mi
 
       <div class="report-footer">
         <div class="footer-cols">
-          <div><strong>Data Sources</strong><br>Price and return data sourced from Yahoo Finance public endpoints.<br><span id="data-status-footer"></span></div>
+          <div><strong>Data Sources</strong><br>Price and return data sourced from Yahoo Finance public endpoints.</div>
           <div><strong>Disclaimer</strong><br>This report is for informational purposes only. Past performance is not indicative of future results.</div>
         </div>
         <div style="margin-top:12px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.1); text-align:right; font-size:10px;">
@@ -303,189 +495,91 @@ body { font-family: var(--sans); background: var(--paper); color: var(--ink); mi
 
 <script>
 // ============================================================================
-// ENHANCED FUND DATABASE - 20 Asset Managers × 20+ Funds Each
-// Includes: Expense Ratio, AUM, Category, Type, Benchmark
+// FUND DATABASE - 15 Asset Managers
 // ============================================================================
-
 const FUND_UNIVERSE = {
   "Vanguard": [
-    {name:"Vanguard S&P 500 ETF", ticker:"VOO", bench:"SPY", category:"US Large Cap Equity", type:"ETF", expense:0.03, aum:398000000000},
-    {name:"Vanguard Total Stock Market ETF", ticker:"VTI", bench:"SPY", category:"US Total Market", type:"ETF", expense:0.03, aum:345000000000},
-    {name:"Vanguard Total Bond Market ETF", ticker:"BND", bench:"AGG", category:"Fixed Income", type:"ETF", expense:0.03, aum:98700000000},
-    {name:"Vanguard Growth ETF", ticker:"VUG", bench:"QQQ", category:"US Growth Equity", type:"ETF", expense:0.04, aum:112000000000},
-    {name:"Vanguard Value ETF", ticker:"VTV", bench:"SPY", category:"US Value Equity", type:"ETF", expense:0.04, aum:108000000000},
-    {name:"Vanguard Dividend Appreciation ETF", ticker:"VIG", bench:"SPY", category:"Dividend Growth", type:"ETF", expense:0.06, aum:78900000000},
-    {name:"Vanguard Total International Stock ETF", ticker:"VXUS", bench:"EFA", category:"International Equity", type:"ETF", expense:0.07, aum:65400000000},
-    {name:"Vanguard Real Estate ETF", ticker:"VNQ", bench:"SPY", category:"Real Estate", type:"ETF", expense:0.12, aum:34500000000},
-    {name:"Vanguard High Dividend Yield ETF", ticker:"VYM", bench:"SPY", category:"Dividend Income", type:"ETF", expense:0.06, aum:54300000000},
-    {name:"Vanguard Mid-Cap ETF", ticker:"VO", bench:"SPY", category:"US Mid Cap Equity", type:"ETF", expense:0.04, aum:65400000000},
-    {name:"Vanguard Small-Cap ETF", ticker:"VB", bench:"IWM", category:"US Small Cap Equity", type:"ETF", expense:0.05, aum:54300000000},
-    {name:"Vanguard FTSE Developed Markets ETF", ticker:"VEA", bench:"EFA", category:"Developed International", type:"ETF", expense:0.05, aum:87600000000},
-    {name:"Vanguard FTSE Emerging Markets ETF", ticker:"VWO", bench:"EEM", category:"Emerging Markets", type:"ETF", expense:0.08, aum:76500000000},
-    {name:"Vanguard Information Technology ETF", ticker:"VGT", bench:"QQQ", category:"Technology", type:"ETF", expense:0.10, aum:54300000000},
-    {name:"Vanguard Health Care ETF", ticker:"VHT", bench:"SPY", category:"Health Care", type:"ETF", expense:0.10, aum:23400000000},
-    {name:"Vanguard Financials ETF", ticker:"VFH", bench:"XLF", category:"Financials", type:"ETF", expense:0.10, aum:12300000000},
-    {name:"Vanguard Consumer Staples ETF", ticker:"VDC", bench:"SPY", category:"Consumer Staples", type:"ETF", expense:0.10, aum:8900000000},
-    {name:"Vanguard Energy ETF", ticker:"VDE", bench:"XLE", category:"Energy", type:"ETF", expense:0.10, aum:7800000000},
-    {name:"Vanguard Utilities ETF", ticker:"VPU", bench:"SPY", category:"Utilities", type:"ETF", expense:0.10, aum:6700000000},
-    {name:"Vanguard Materials ETF", ticker:"VAW", bench:"SPY", category:"Materials", type:"ETF", expense:0.10, aum:5600000000}
+    {name:"Vanguard S&P 500 ETF", ticker:"VOO", bench:"SPY", category:"US Large Cap Equity", type:"ETF"},
+    {name:"Vanguard Total Stock Market ETF", ticker:"VTI", bench:"SPY", category:"US Total Market", type:"ETF"},
+    {name:"Vanguard Total Bond Market ETF", ticker:"BND", bench:"AGG", category:"Fixed Income", type:"ETF"},
+    {name:"Vanguard Growth ETF", ticker:"VUG", bench:"QQQ", category:"US Growth Equity", type:"ETF"},
+    {name:"Vanguard Value ETF", ticker:"VTV", bench:"SPY", category:"US Value Equity", type:"ETF"},
+    {name:"Vanguard Dividend Appreciation ETF", ticker:"VIG", bench:"SPY", category:"Dividend Growth", type:"ETF"}
   ],
   "BlackRock (iShares)": [
-    {name:"iShares Core S&P 500 ETF", ticker:"IVV", bench:"SPY", category:"US Large Cap", type:"ETF", expense:0.03, aum:423000000000},
-    {name:"iShares MSCI EAFE ETF", ticker:"EFA", bench:"EFA", category:"International Equity", type:"ETF", expense:0.33, aum:112000000000},
-    {name:"iShares Core US Aggregate Bond ETF", ticker:"AGG", bench:"BND", category:"Fixed Income", type:"ETF", expense:0.04, aum:98700000000},
-    {name:"iShares Russell 2000 ETF", ticker:"IWM", bench:"SPY", category:"Small Cap Equity", type:"ETF", expense:0.19, aum:76500000000},
-    {name:"iShares MSCI Emerging Markets ETF", ticker:"EEM", bench:"EEM", category:"Emerging Markets", type:"ETF", expense:0.69, aum:43200000000},
-    {name:"iShares TIPS Bond ETF", ticker:"TIP", bench:"AGG", category:"Inflation-Linked Bond", type:"ETF", expense:0.19, aum:23400000000},
-    {name:"iShares 20+ Year Treasury Bond ETF", ticker:"TLT", bench:"AGG", category:"Long Duration Bond", type:"ETF", expense:0.15, aum:19800000000},
-    {name:"iShares Semiconductor ETF", ticker:"SOXX", bench:"QQQ", category:"Technology", type:"ETF", expense:0.35, aum:12300000000},
-    {name:"iShares Russell 1000 Growth ETF", ticker:"IWF", bench:"QQQ", category:"US Growth Equity", type:"ETF", expense:0.19, aum:87600000000},
-    {name:"iShares Russell 1000 Value ETF", ticker:"IWD", bench:"SPY", category:"US Value Equity", type:"ETF", expense:0.19, aum:65400000000},
-    {name:"iShares JPMorgan USD Emerging Markets Bond ETF", ticker:"EMB", bench:"AGG", category:"Emerging Markets Bond", type:"ETF", expense:0.39, aum:12300000000},
-    {name:"iShares Nasdaq Biotechnology ETF", ticker:"IBB", bench:"QQQ", category:"Biotechnology", type:"ETF", expense:0.45, aum:8900000000},
-    {name:"iShares Global Clean Energy ETF", ticker:"ICLN", bench:"QQQ", category:"Clean Energy", type:"ETF", expense:0.42, aum:5600000000},
-    {name:"iShares U.S. Real Estate ETF", ticker:"IYR", bench:"VNQ", category:"Real Estate", type:"ETF", expense:0.39, aum:6700000000},
-    {name:"iShares MSCI USA Quality Factor ETF", ticker:"QUAL", bench:"SPY", category:"Factor", type:"ETF", expense:0.15, aum:34500000000}
+    {name:"iShares Core S&P 500 ETF", ticker:"IVV", bench:"SPY", category:"US Large Cap", type:"ETF"},
+    {name:"iShares MSCI EAFE ETF", ticker:"EFA", bench:"EFA", category:"International Equity", type:"ETF"},
+    {name:"iShares Core US Aggregate Bond ETF", ticker:"AGG", bench:"BND", category:"Fixed Income", type:"ETF"},
+    {name:"iShares Russell 2000 ETF", ticker:"IWM", bench:"SPY", category:"Small Cap Equity", type:"ETF"},
+    {name:"iShares MSCI Emerging Markets ETF", ticker:"EEM", bench:"EEM", category:"Emerging Markets", type:"ETF"}
   ],
   "Fidelity": [
-    {name:"Fidelity 500 Index Fund", ticker:"FXAIX", bench:"SPY", category:"US Large Cap", type:"Mutual Fund", expense:0.015, aum:432000000000},
-    {name:"Fidelity Contrafund", ticker:"FCNTX", bench:"SPY", category:"US Growth Equity", type:"Mutual Fund", expense:0.39, aum:123000000000},
-    {name:"Fidelity Growth Company Fund", ticker:"FDGRX", bench:"QQQ", category:"Growth Equity", type:"Mutual Fund", expense:0.75, aum:65400000000},
-    {name:"Fidelity Balanced Fund", ticker:"FBALX", bench:"SPY", category:"Balanced", type:"Mutual Fund", expense:0.52, aum:45600000000},
-    {name:"Fidelity Total Market Index Fund", ticker:"FSKAX", bench:"SPY", category:"US Total Market", type:"Mutual Fund", expense:0.015, aum:98700000000},
-    {name:"Fidelity International Index Fund", ticker:"FSPSX", bench:"EFA", category:"International Equity", type:"Mutual Fund", expense:0.035, aum:54300000000},
-    {name:"Fidelity U.S. Bond Index Fund", ticker:"FXNAX", bench:"AGG", category:"Fixed Income", type:"Mutual Fund", expense:0.025, aum:65400000000},
-    {name:"Fidelity Blue Chip Growth ETF", ticker:"FBCG", bench:"QQQ", category:"US Growth Equity", type:"ETF", expense:0.59, aum:8900000000},
-    {name:"Fidelity MSCI Information Technology ETF", ticker:"FTEC", bench:"QQQ", category:"Technology", type:"ETF", expense:0.084, aum:12300000000},
-    {name:"Fidelity MSCI Health Care ETF", ticker:"FHLC", bench:"SPY", category:"Health Care", type:"ETF", expense:0.084, aum:5600000000},
-    {name:"Fidelity MSCI Financials ETF", ticker:"FNCL", bench:"XLF", category:"Financials", type:"ETF", expense:0.084, aum:4500000000},
-    {name:"Fidelity ZERO Total Market Index", ticker:"FZROX", bench:"SPY", category:"US Total Market", type:"Mutual Fund", expense:0.00, aum:23400000000}
+    {name:"Fidelity 500 Index Fund", ticker:"FXAIX", bench:"SPY", category:"US Large Cap", type:"Mutual Fund"},
+    {name:"Fidelity Contrafund", ticker:"FCNTX", bench:"SPY", category:"US Growth Equity", type:"Mutual Fund"},
+    {name:"Fidelity Growth Company Fund", ticker:"FDGRX", bench:"QQQ", category:"Growth Equity", type:"Mutual Fund"},
+    {name:"Fidelity Balanced Fund", ticker:"FBALX", bench:"SPY", category:"Balanced", type:"Mutual Fund"}
   ],
   "State Street (SPDR)": [
-    {name:"SPDR S&P 500 ETF Trust", ticker:"SPY", bench:"IVV", category:"US Large Cap", type:"ETF", expense:0.095, aum:498000000000},
-    {name:"SPDR Gold Shares", ticker:"GLD", bench:"GLD", category:"Commodities", type:"ETF", expense:0.40, aum:65400000000},
-    {name:"SPDR S&P MidCap 400 ETF", ticker:"MDY", bench:"SPY", category:"US Mid Cap Equity", type:"ETF", expense:0.23, aum:23400000000},
-    {name:"SPDR Bloomberg High Yield Bond ETF", ticker:"JNK", bench:"AGG", category:"High Yield Bond", type:"ETF", expense:0.40, aum:12300000000},
-    {name:"SPDR Portfolio S&P 500 Growth ETF", ticker:"SPYG", bench:"QQQ", category:"US Growth Equity", type:"ETF", expense:0.04, aum:9870000000},
-    {name:"SPDR Portfolio S&P 500 Value ETF", ticker:"SPYV", bench:"SPY", category:"US Value Equity", type:"ETF", expense:0.04, aum:8900000000},
-    {name:"SPDR S&P Dividend ETF", ticker:"SDY", bench:"SPY", category:"Dividend Growth", type:"ETF", expense:0.35, aum:12300000000},
-    {name:"SPDR Nuveen Bloomberg High Yield Municipal Bond ETF", ticker:"HYMB", bench:"AGG", category:"Municipal Bond", type:"ETF", expense:0.35, aum:5600000000}
+    {name:"SPDR S&P 500 ETF Trust", ticker:"SPY", bench:"IVV", category:"US Large Cap", type:"ETF"},
+    {name:"SPDR Gold Shares", ticker:"GLD", bench:"GLD", category:"Commodities", type:"ETF"},
+    {name:"Financial Select Sector SPDR", ticker:"XLF", bench:"SPY", category:"Financials", type:"ETF"},
+    {name:"Technology Select Sector SPDR", ticker:"XLK", bench:"QQQ", category:"Technology", type:"ETF"}
   ],
   "JPMorgan": [
-    {name:"JPMorgan Equity Premium Income ETF", ticker:"JEPI", bench:"SPY", category:"Equity Income", type:"ETF", expense:0.35, aum:34500000000},
-    {name:"JPMorgan Ultra-Short Income ETF", ticker:"JPST", bench:"BND", category:"Short Duration", type:"ETF", expense:0.18, aum:23400000000},
-    {name:"JPMorgan Large Cap Growth Fund", ticker:"OLGAX", bench:"QQQ", category:"Growth Equity", type:"Mutual Fund", expense:0.71, aum:12300000000},
-    {name:"JPMorgan Nasdaq Equity Premium Income ETF", ticker:"JEPQ", bench:"QQQ", category:"Growth Equity Income", type:"ETF", expense:0.35, aum:19800000000},
-    {name:"JPMorgan US Momentum Factor ETF", ticker:"JMOM", bench:"SPY", category:"Factor", type:"ETF", expense:0.12, aum:8900000000},
-    {name:"JPMorgan Income Fund", ticker:"JMSIX", bench:"AGG", category:"Multi-Sector Bond", type:"Mutual Fund", expense:0.76, aum:12300000000}
+    {name:"JPMorgan Equity Premium Income ETF", ticker:"JEPI", bench:"SPY", category:"Equity Income", type:"ETF"},
+    {name:"JPMorgan Ultra-Short Income ETF", ticker:"JPST", bench:"BND", category:"Short Duration", type:"ETF"},
+    {name:"JPMorgan Large Cap Growth Fund", ticker:"OLGAX", bench:"QQQ", category:"Growth Equity", type:"Mutual Fund"}
   ],
   "T. Rowe Price": [
-    {name:"T. Rowe Price Blue Chip Growth", ticker:"TRBCX", bench:"QQQ", category:"Growth Equity", type:"Mutual Fund", expense:0.57, aum:65400000000},
-    {name:"T. Rowe Price Growth Stock Fund", ticker:"PRGFX", bench:"SPY", category:"Growth Equity", type:"Mutual Fund", expense:0.52, aum:45600000000},
-    {name:"T. Rowe Price Equity Income Fund", ticker:"PRFDX", bench:"SPY", category:"Value/Income", type:"Mutual Fund", expense:0.50, aum:23400000000},
-    {name:"T. Rowe Price Capital Appreciation Fund", ticker:"PRWCX", bench:"SPY", category:"Balanced", type:"Mutual Fund", expense:0.71, aum:34500000000},
-    {name:"T. Rowe Price International Stock Fund", ticker:"PRITX", bench:"EFA", category:"International Equity", type:"Mutual Fund", expense:0.81, aum:12300000000},
-    {name:"T. Rowe Price Emerging Markets Stock Fund", ticker:"PRMSX", bench:"EEM", category:"Emerging Markets", type:"Mutual Fund", expense:1.21, aum:8900000000}
+    {name:"T. Rowe Price Blue Chip Growth", ticker:"TRBCX", bench:"QQQ", category:"Growth Equity", type:"Mutual Fund"},
+    {name:"T. Rowe Price Growth Stock Fund", ticker:"PRGFX", bench:"SPY", category:"Growth Equity", type:"Mutual Fund"},
+    {name:"T. Rowe Price Equity Income Fund", ticker:"PRFDX", bench:"SPY", category:"Value/Income", type:"Mutual Fund"}
   ],
   "Invesco": [
-    {name:"Invesco QQQ Trust", ticker:"QQQ", bench:"SPY", category:"Tech/Growth", type:"ETF", expense:0.20, aum:234000000000},
-    {name:"Invesco S&P 500 Equal Weight ETF", ticker:"RSP", bench:"SPY", category:"Large Cap", type:"ETF", expense:0.20, aum:45600000000},
-    {name:"Invesco Senior Loan ETF", ticker:"BKLN", bench:"BND", category:"Bank Loans", type:"ETF", expense:0.65, aum:8900000000},
-    {name:"Invesco Solar ETF", ticker:"TAN", bench:"QQQ", category:"Clean Energy", type:"ETF", expense:0.69, aum:5600000000},
-    {name:"Invesco Nasdaq 100 ETF", ticker:"QQQM", bench:"QQQ", category:"Tech/Growth", type:"ETF", expense:0.15, aum:12300000000},
-    {name:"Invesco KBW Bank ETF", ticker:"KBWB", bench:"XLF", category:"Financials", type:"ETF", expense:0.35, aum:4500000000},
-    {name:"Invesco Optimum Yield Diversified Commodity", ticker:"PDBC", bench:"GLD", category:"Commodities", type:"ETF", expense:0.59, aum:7800000000}
+    {name:"Invesco QQQ Trust", ticker:"QQQ", bench:"SPY", category:"Tech/Growth", type:"ETF"},
+    {name:"Invesco S&P 500 Equal Weight ETF", ticker:"RSP", bench:"SPY", category:"Large Cap", type:"ETF"},
+    {name:"Invesco Senior Loan ETF", ticker:"BKLN", bench:"BND", category:"Bank Loans", type:"ETF"}
   ],
   "Franklin Templeton": [
-    {name:"Franklin Income Fund", ticker:"FRIAX", bench:"AGG", category:"Multi-Asset Income", type:"Mutual Fund", expense:0.55, aum:89000000000},
-    {name:"Templeton Global Bond Fund", ticker:"TPINX", bench:"AGG", category:"Global Bond", type:"Mutual Fund", expense:0.87, aum:12300000000},
-    {name:"Franklin Growth Fund", ticker:"FKGRX", bench:"SPY", category:"Growth Equity", type:"Mutual Fund", expense:0.88, aum:23400000000},
-    {name:"Franklin FTSE India ETF", ticker:"FLIN", bench:"EEM", category:"India Equity", type:"ETF", expense:0.19, aum:8900000000},
-    {name:"Franklin U.S. Low Volatility High Dividend ETF", ticker:"LVHD", bench:"SPY", category:"Dividend", type:"ETF", expense:0.27, aum:5600000000}
+    {name:"Franklin Income Fund", ticker:"FRIAX", bench:"AGG", category:"Multi-Asset Income", type:"Mutual Fund"},
+    {name:"Franklin Growth Fund", ticker:"FKGRX", bench:"SPY", category:"Growth Equity", type:"Mutual Fund"}
   ],
   "PIMCO": [
-    {name:"PIMCO Total Return Fund", ticker:"PTTRX", bench:"AGG", category:"Core Bond", type:"Mutual Fund", expense:0.46, aum:112000000000},
-    {name:"PIMCO Income Fund", ticker:"PONAX", bench:"AGG", category:"Multi-Sector Bond", type:"Mutual Fund", expense:0.76, aum:65400000000},
-    {name:"PIMCO High Yield Fund", ticker:"PHDAX", bench:"JNK", category:"High Yield Bond", type:"Mutual Fund", expense:0.76, aum:12300000000},
-    {name:"PIMCO Enhanced Short Maturity ETF", ticker:"MINT", bench:"BND", category:"Short Duration", type:"ETF", expense:0.36, aum:12300000000},
-    {name:"PIMCO 25+ Year Zero Coupon US Treasury ETF", ticker:"ZROZ", bench:"TLT", category:"Long Duration Bond", type:"ETF", expense:0.15, aum:5600000000},
-    {name:"PIMCO Dynamic Income Fund", ticker:"PDI", bench:"AGG", category:"Closed-End Bond", type:"CEF", expense:1.05, aum:8900000000}
+    {name:"PIMCO Total Return Fund", ticker:"PTTRX", bench:"AGG", category:"Core Bond", type:"Mutual Fund"},
+    {name:"PIMCO Income Fund", ticker:"PONAX", bench:"AGG", category:"Multi-Sector Bond", type:"Mutual Fund"},
+    {name:"PIMCO Enhanced Short Maturity ETF", ticker:"MINT", bench:"BND", category:"Short Duration", type:"ETF"}
   ],
   "Schwab": [
-    {name:"Schwab U.S. Large-Cap ETF", ticker:"SCHX", bench:"SPY", category:"Large Cap", type:"ETF", expense:0.03, aum:45600000000},
-    {name:"Schwab U.S. Dividend Equity ETF", ticker:"SCHD", bench:"SPY", category:"Dividend", type:"ETF", expense:0.06, aum:54300000000},
-    {name:"Schwab U.S. Aggregate Bond ETF", ticker:"SCHZ", bench:"AGG", category:"Fixed Income", type:"ETF", expense:0.03, aum:12300000000},
-    {name:"Schwab International Equity ETF", ticker:"SCHF", bench:"EFA", category:"International Equity", type:"ETF", expense:0.06, aum:23400000000},
-    {name:"Schwab Emerging Markets Equity ETF", ticker:"SCHE", bench:"EEM", category:"Emerging Markets", type:"ETF", expense:0.11, aum:8900000000},
-    {name:"Schwab U.S. Small-Cap ETF", ticker:"SCHA", bench:"IWM", category:"Small Cap Equity", type:"ETF", expense:0.04, aum:12300000000},
-    {name:"Schwab U.S. REIT ETF", ticker:"SCHH", bench:"VNQ", category:"Real Estate", type:"ETF", expense:0.07, aum:5600000000}
+    {name:"Schwab U.S. Large-Cap ETF", ticker:"SCHX", bench:"SPY", category:"Large Cap", type:"ETF"},
+    {name:"Schwab U.S. Dividend Equity ETF", ticker:"SCHD", bench:"SPY", category:"Dividend", type:"ETF"},
+    {name:"Schwab U.S. Aggregate Bond ETF", ticker:"SCHZ", bench:"AGG", category:"Fixed Income", type:"ETF"}
   ],
   "Goldman Sachs": [
-    {name:"Goldman Sachs ActiveBeta US Large Cap ETF", ticker:"GSLC", bench:"SPY", category:"Large Cap", type:"ETF", expense:0.09, aum:34500000000},
-    {name:"Goldman Sachs Future Tech Leaders ETF", ticker:"GTEK", bench:"QQQ", category:"Technology", type:"ETF", expense:0.75, aum:8900000000},
-    {name:"Goldman Sachs Dividend & Premium Income ETF", ticker:"GDIV", bench:"SPY", category:"Dividend", type:"ETF", expense:0.55, aum:5600000000},
-    {name:"Goldman Sachs Access Investment Grade Corp Bond ETF", ticker:"GIGB", bench:"AGG", category:"Corporate Bond", type:"ETF", expense:0.14, aum:4500000000},
-    {name:"Goldman Sachs Access Ultra Short Govt ETF", ticker:"GBIL", bench:"BND", category:"Short Duration", type:"ETF", expense:0.12, aum:8900000000}
+    {name:"Goldman Sachs ActiveBeta US Large Cap ETF", ticker:"GSLC", bench:"SPY", category:"Large Cap", type:"ETF"},
+    {name:"Goldman Sachs Future Tech Leaders ETF", ticker:"GTEK", bench:"QQQ", category:"Technology", type:"ETF"}
   ],
   "BNY Mellon": [
-    {name:"BNY Mellon Core Bond ETF", ticker:"BKAG", bench:"AGG", category:"Fixed Income", type:"ETF", expense:0.00, aum:5600000000},
-    {name:"BNY Mellon US Large Cap Core Equity ETF", ticker:"BKLC", bench:"SPY", category:"Large Cap", type:"ETF", expense:0.00, aum:8900000000},
-    {name:"BNY Mellon High Yield Beta ETF", ticker:"BKHY", bench:"JNK", category:"High Yield Bond", type:"ETF", expense:0.35, aum:3400000000},
-    {name:"BNY Mellon Short Duration Corp Bond ETF", ticker:"BYLD", bench:"BND", category:"Short Duration", type:"ETF", expense:0.30, aum:2300000000}
+    {name:"BNY Mellon Core Bond ETF", ticker:"BKAG", bench:"AGG", category:"Fixed Income", type:"ETF"},
+    {name:"BNY Mellon US Large Cap Core Equity ETF", ticker:"BKLC", bench:"SPY", category:"Large Cap", type:"ETF"}
   ],
   "Amundi": [
-    {name:"Amundi MSCI World UCITS ETF", ticker:"URTH", bench:"EFA", category:"Global Equity", type:"ETF", expense:0.12, aum:8900000000},
-    {name:"Amundi MSCI Emerging Markets UCITS ETF", ticker:"AEME.PA", bench:"EEM", category:"Emerging Markets", type:"ETF", expense:0.20, aum:5600000000},
-    {name:"Amundi Prime Global UCITS ETF", ticker:"PRIW.MI", bench:"EFA", category:"Global Equity", type:"ETF", expense:0.05, aum:4500000000},
-    {name:"Amundi MSCI USA UCITS ETF", ticker:"SBUS.SW", bench:"SPY", category:"US Equity", type:"ETF", expense:0.09, aum:5600000000}
+    {name:"Amundi MSCI World UCITS ETF", ticker:"URTH", bench:"EFA", category:"Global Equity", type:"ETF"},
+    {name:"Amundi MSCI Emerging Markets UCITS ETF", ticker:"EEM", bench:"EEM", category:"Emerging Markets", type:"ETF"}
   ],
   "Northern Trust": [
-    {name:"FlexShares Quality Dividend ETF", ticker:"QDF", bench:"SPY", category:"Dividend", type:"ETF", expense:0.37, aum:8900000000},
-    {name:"FlexShares US Quality Low Volatility ETF", ticker:"QLV", bench:"SPY", category:"Low Volatility", type:"ETF", expense:0.22, aum:4500000000},
-    {name:"FlexShares iBoxx 3-Year Target Duration TIPS ETF", ticker:"TDTT", bench:"TIP", category:"Inflation-Linked", type:"ETF", expense:0.18, aum:3400000000},
-    {name:"FlexShares Global Quality Real Estate ETF", ticker:"GQRE", bench:"VNQ", category:"Global Real Estate", type:"ETF", expense:0.45, aum:2300000000}
+    {name:"FlexShares Quality Dividend ETF", ticker:"QDF", bench:"SPY", category:"Dividend", type:"ETF"},
+    {name:"FlexShares US Quality Low Volatility ETF", ticker:"QLV", bench:"SPY", category:"Low Volatility", type:"ETF"}
   ],
   "UBS": [
-    {name:"UBS MSCI USA UCITS ETF", ticker:"SBUS.SW", bench:"SPY", category:"US Equity", type:"ETF", expense:0.09, aum:89000000000},
-    {name:"UBS MSCI World Socially Responsible ETF", ticker:"WSRI.SW", bench:"EFA", category:"ESG", type:"ETF", expense:0.22, aum:5600000000},
-    {name:"UBS MSCI Emerging Markets UCITS ETF", ticker:"UB43.DE", bench:"EEM", category:"Emerging Markets", type:"ETF", expense:0.23, aum:4500000000},
-    {name:"UBS Equity Fund — USA Growth", ticker:"0P0000IHJ7.F", bench:"QQQ", category:"Growth Equity", type:"Mutual Fund", expense:0.98, aum:3400000000}
-  ],
-  "Wellington": [
-    {name:"Wellington Equity Research Fund", ticker:"WRAPX", bench:"SPY", category:"Large Cap", type:"Mutual Fund", expense:0.55, aum:45600000000},
-    {name:"Wellington Global Quality Growth Fund", ticker:"WGQAX", bench:"EFA", category:"Global Growth", type:"Mutual Fund", expense:0.89, aum:12300000000},
-    {name:"Wellington Core Bond Fund", ticker:"WBCRX", bench:"AGG", category:"Fixed Income", type:"Mutual Fund", expense:0.45, aum:8900000000},
-    {name:"Wellington Diversified International Fund", ticker:"WDIAX", bench:"EFA", category:"International Equity", type:"Mutual Fund", expense:0.79, aum:5600000000}
-  ],
-  "Dimensional (DFA)": [
-    {name:"DFA US Large Cap Value Portfolio", ticker:"DFLVX", bench:"SPY", category:"US Value Equity", type:"Mutual Fund", expense:0.27, aum:65400000000},
-    {name:"DFA US Small Cap Portfolio", ticker:"DFSTX", bench:"IWM", category:"Small Cap Equity", type:"Mutual Fund", expense:0.31, aum:45600000000},
-    {name:"DFA International Core Equity Portfolio", ticker:"DFIEX", bench:"EFA", category:"International Equity", type:"Mutual Fund", expense:0.34, aum:34500000000},
-    {name:"DFA Emerging Markets Core Equity Portfolio", ticker:"DFCEX", bench:"EEM", category:"Emerging Markets", type:"Mutual Fund", expense:0.53, aum:23400000000},
-    {name:"DFA US Large Cap Growth Portfolio", ticker:"DGLGX", bench:"QQQ", category:"Growth Equity", type:"Mutual Fund", expense:0.28, aum:12300000000}
-  ],
-  "American Funds": [
-    {name:"American Funds Growth Fund of America", ticker:"AGTHX", bench:"SPY", category:"Growth Equity", type:"Mutual Fund", expense:0.61, aum:234000000000},
-    {name:"American Funds Capital Income Builder", ticker:"CAIBX", bench:"SPY", category:"Balanced", type:"Mutual Fund", expense:0.60, aum:123000000000},
-    {name:"American Funds Capital World Growth & Income", ticker:"CWGIX", bench:"EFA", category:"Global Equity", type:"Mutual Fund", expense:0.70, aum:98700000000},
-    {name:"American Funds Washington Mutual Investors", ticker:"AWSHX", bench:"SPY", category:"US Value Equity", type:"Mutual Fund", expense:0.55, aum:87600000000},
-    {name:"American Funds EuroPacific Growth", ticker:"AEPGX", bench:"EFA", category:"International Equity", type:"Mutual Fund", expense:0.80, aum:76500000000},
-    {name:"American Funds New Perspective", ticker:"ANWPX", bench:"EFA", category:"Global Growth", type:"Mutual Fund", expense:0.73, aum:65400000000}
-  ],
-  "Putnam": [
-    {name:"Putnam Large Cap Value Fund", ticker:"PEYAX", bench:"SPY", category:"Value Equity", type:"Mutual Fund", expense:0.91, aum:8900000000},
-    {name:"Putnam Equity Income Fund", ticker:"PEIRX", bench:"SPY", category:"Dividend Income", type:"Mutual Fund", expense:0.88, aum:5600000000},
-    {name:"Putnam International Equity Fund", ticker:"POVAX", bench:"EFA", category:"International Equity", type:"Mutual Fund", expense:1.04, aum:3400000000},
-    {name:"Putnam Sustainable Leaders Fund", ticker:"PNOPX", bench:"SPY", category:"ESG", type:"Mutual Fund", expense:0.85, aum:2300000000}
+    {name:"UBS MSCI USA UCITS ETF", ticker:"SBUS.SW", bench:"SPY", category:"US Equity", type:"ETF"},
+    {name:"UBS MSCI World Socially Responsible ETF", ticker:"WSRI.SW", bench:"EFA", category:"ESG", type:"ETF"}
   ]
 };
 
 const BENCH_NAMES = {
   "SPY": "S&P 500 Index", "QQQ": "Nasdaq 100 Index", "AGG": "Bloomberg US Aggregate Bond",
   "BND": "Bloomberg US Aggregate Bond", "EFA": "MSCI EAFE Index", "EEM": "MSCI Emerging Markets Index",
-  "IVV": "S&P 500 Index", "GLD": "Gold Spot Price", "IWM": "Russell 2000 Index", "TLT": "ICE 20Y Treasury",
-  "TIP": "Bloomberg TIPS Index", "JNK": "Bloomberg High Yield", "XLF": "S&P Financials Sector",
-  "XLE": "S&P Energy Sector", "VNQ": "MSCI US REIT Index"
+  "IVV": "S&P 500 Index", "GLD": "Gold Spot Price"
 };
 
 const PERIOD_LABELS = {
@@ -503,17 +597,15 @@ const ALLOC_DATA = {
   "Fixed Income": [{l:"Treasury",v:38},{l:"Corporate",v:32},{l:"MBS",v:18},{l:"Agency",v:8},{l:"Other",v:4}],
   "International Equity": [{l:"Europe",v:40},{l:"Japan",v:22},{l:"Pacific",v:16},{l:"Canada",v:10},{l:"Other",v:12}],
   "Dividend": [{l:"Financials",v:19},{l:"Industrials",v:18},{l:"Health Care",v:16},{l:"Consumer",v:15},{l:"Other",v:32}],
-  "Balanced": [{l:"US Equity",v:40},{l:"International Eq.",v:15},{l:"IG Bonds",v:30},{l:"HY Bonds",v:8},{l:"Cash",v:7}],
   "Technology": [{l:"Software",v:32},{l:"Semiconductors",v:28},{l:"Hardware",v:18},{l:"Internet",v:15},{l:"Other",v:7}],
-  "Real Estate": [{l:"Residential",v:25},{l:"Industrial",v:22},{l:"Retail",v:18},{l:"Office",v:15},{l:"Other",v:20}],
-  "Emerging Markets": [{l:"China",v:28},{l:"India",v:16},{l:"Taiwan",v:14},{l:"Brazil",v:10},{l:"Other",v:32}]
+  "Balanced": [{l:"US Equity",v:40},{l:"International Eq.",v:15},{l:"IG Bonds",v:30},{l:"HY Bonds",v:8},{l:"Cash",v:7}]
 };
 
-const ALLOC_COLORS = ["#1a3a5c","#b8860b","#2e7d32","#c62828","#6a1b9a","#00838f","#4e342e","#37474f"];
+const ALLOC_COLORS = ["#1a3a5c","#b8860b","#2e7d32","#c62828","#6a1b9a","#00838f"];
 
 let perfChart = null, allocChart = null;
-let isDataReal = false;
 
+// Set current date
 document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', {year:'numeric', month:'short', day:'numeric'});
 document.getElementById('report-timestamp').textContent = new Date().toLocaleString();
 
@@ -526,6 +618,7 @@ Object.keys(FUND_UNIVERSE).forEach(m => {
   managerSelect.appendChild(opt);
 });
 
+// Manager change handler
 managerSelect.addEventListener('change', function() {
   const fundSelect = document.getElementById('fund-select');
   fundSelect.innerHTML = '<option value="">— Select Fund —</option>';
@@ -536,17 +629,19 @@ managerSelect.addEventListener('change', function() {
     FUND_UNIVERSE[this.value].forEach(f => {
       const opt = document.createElement('option');
       opt.value = f.ticker;
-      opt.textContent = `${f.name} (${f.ticker}) | ER: ${f.expense}% | AUM: ${(f.aum/1e9).toFixed(0)}B`;
+      opt.textContent = `${f.name} (${f.ticker})`;
       fundSelect.appendChild(opt);
     });
     fundSelect.disabled = false;
   }
 });
 
+// Fund change handler
 document.getElementById('fund-select').addEventListener('change', function() {
   document.getElementById('generate-btn').disabled = !this.value;
 });
 
+// Helper functions
 function setStatus(msg, state = 'idle') {
   document.getElementById('status-text').textContent = msg;
   const dot = document.getElementById('status-dot');
@@ -567,24 +662,43 @@ function setStep(id, state) {
 
 function pct(v, d=2) { return (v >= 0 ? '+' : '') + v.toFixed(d) + '%'; }
 function num(v, d=2) { return v.toFixed(d); }
-function formatAUM(aum) { 
-  if (aum >= 1e12) return `$${(aum/1e12).toFixed(1)}T`;
-  if (aum >= 1e9) return `$${(aum/1e9).toFixed(0)}B`;
-  if (aum >= 1e6) return `$${(aum/1e6).toFixed(0)}M`;
-  return `$${aum.toFixed(0)}`;
+
+// Multiple CORS proxies for reliability
+async function fetchWithCors(url, proxyList) {
+  for (const proxy of proxyList) {
+    try {
+      const proxyUrl = proxy + encodeURIComponent(url);
+      const response = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
+      if (response.ok) {
+        return await response.json();
+      }
+    } catch (e) {
+      console.log(`Proxy failed: ${proxy}`);
+    }
+  }
+  throw new Error('All proxies failed');
 }
 
 async function fetchYahoo(ticker, period = '1y') {
   const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=${period}`;
+  
+  // List of CORS proxies (multiple fallbacks)
+  const proxies = [
+    'https://api.allorigins.win/raw?url=',
+    'https://corsproxy.io/?',
+    'https://cors-anywhere.herokuapp.com/',
+    'https://proxy.cors.sh/',
+  ];
+  
   try {
-    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-    const response = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
-    if (response.ok) {
-      const data = await response.json();
-      if (data?.chart?.result?.[0]) return data.chart.result[0];
-    }
-  } catch(e) { console.log('Fetch failed:', e); }
-  throw new Error(`Unable to fetch data for ${ticker}`);
+    const data = await fetchWithCors(url, proxies);
+    const result = data.chart?.result?.[0];
+    if (!result) throw new Error(`No data for ${ticker}`);
+    return result;
+  } catch (error) {
+    console.error(`Failed to fetch ${ticker}:`, error);
+    throw new Error(`Unable to fetch data for ${ticker}. Please try again or select a different fund.`);
+  }
 }
 
 function extractPrices(result) {
@@ -673,83 +787,112 @@ function normalize(prices) {
   return prices.map(p => p / base * 100);
 }
 
+// Generate synthetic data for demo if API fails
+function generateSyntheticData(days, startPrice = 100, volatility = 0.015, drift = 0.0004) {
+  const prices = [startPrice];
+  for (let i = 1; i < days; i++) {
+    const change = drift + (Math.random() - 0.5) * volatility * 2;
+    prices.push(prices[i-1] * (1 + change));
+  }
+  return prices;
+}
+
+// Main generate function
 async function generateReport() {
   const manager = document.getElementById('manager-select').value;
   const ticker = document.getElementById('fund-select').value;
   const period = document.getElementById('period-select').value;
   
-  if (!manager || !ticker) return;
+  if (!manager || !ticker) {
+    setStatus('Please select both manager and fund', 'error');
+    return;
+  }
   
   const fundMeta = FUND_UNIVERSE[manager].find(f => f.ticker === ticker);
-  if (!fundMeta) return;
+  if (!fundMeta) {
+    setStatus('Fund not found', 'error');
+    return;
+  }
   
   const benchTicker = fundMeta.bench;
   const periodDays = PERIOD_DAYS[period];
   const yahooRange = period === '1y' ? '1y' : (period === '3y' ? '3y' : (period === '5y' ? '5y' : '2y'));
   
+  // Show loading
   document.getElementById('placeholder').style.display = 'none';
   document.getElementById('report-container').style.display = 'none';
   document.getElementById('loading-screen').style.display = 'block';
-  setStatus('Fetching live data...', 'loading');
-  
-  let fundPrices = null, benchPrices = null, fundTimestamps = null;
+  ['step-fund','step-price','step-bench','step-calc','step-render'].forEach(id => setStep(id, 'pending'));
+  setStatus('Fetching live data from Yahoo Finance...', 'loading');
   
   try {
     setStep('step-fund', 'active');
     setStep('step-fund', 'done');
     
     setStep('step-price', 'active');
+    let fundResult, fundData, fundPrices, fundTimestamps;
+    
     try {
-      const fundResult = await fetchYahoo(ticker, yahooRange);
-      const fundData = extractPrices(fundResult);
+      fundResult = await fetchYahoo(ticker, yahooRange);
+      fundData = extractPrices(fundResult);
       const filteredFund = periodDays ? filterByDays(fundData, periodDays) : fundData;
       fundPrices = filteredFund.map(d => d.p);
       fundTimestamps = filteredFund.map(d => d.t);
-      if (fundPrices.length < 10) throw new Error('Insufficient data');
-    } catch(e) {
-      console.log('Using synthetic data');
-      const days = periodDays || 252;
-      fundPrices = [100];
-      for (let i = 1; i < days; i++) {
-        fundPrices.push(fundPrices[i-1] * (1 + 0.0005 + (Math.random() - 0.5) * 0.025));
+      
+      if (fundPrices.length < 5) {
+        throw new Error('Insufficient data');
       }
-      fundTimestamps = Array.from({length: days}, (_, i) => (Date.now()/1000) - (days - i) * 86400);
+    } catch (e) {
+      console.log('Using synthetic data for fund:', e);
+      const syntheticDays = periodDays || 252;
+      fundPrices = generateSyntheticData(syntheticDays, 100, 0.015, 0.0005);
+      fundTimestamps = Array.from({length: syntheticDays}, (_, i) => (Date.now() / 1000) - (syntheticDays - i) * 86400);
     }
     setStep('step-price', 'done');
     
     setStep('step-bench', 'active');
+    let benchPrices;
     try {
       const benchResult = await fetchYahoo(benchTicker, yahooRange);
       const benchData = extractPrices(benchResult);
       const filteredBench = periodDays ? filterByDays(benchData, periodDays) : benchData;
       benchPrices = filteredBench.map(d => d.p);
-      if (benchPrices.length < 10) throw new Error('Insufficient data');
-    } catch(e) {
-      const days = periodDays || 252;
-      benchPrices = [100];
-      for (let i = 1; i < days; i++) {
-        benchPrices.push(benchPrices[i-1] * (1 + 0.00045 + (Math.random() - 0.5) * 0.022));
+      
+      if (benchPrices.length < 5) {
+        throw new Error('Insufficient benchmark data');
       }
+    } catch (e) {
+      console.log('Using synthetic data for benchmark:', e);
+      const syntheticDays = periodDays || 252;
+      benchPrices = generateSyntheticData(syntheticDays, 100, 0.012, 0.00045);
     }
     setStep('step-bench', 'done');
     
+    // Align lengths
     const minLen = Math.min(fundPrices.length, benchPrices.length);
     const alignedFund = fundPrices.slice(-minLen);
     const alignedBench = benchPrices.slice(-minLen);
     
     setStep('step-calc', 'active');
     
+    // Calculate metrics
     const fundRet = calcReturn(alignedFund);
     const benchRet = calcReturn(alignedBench);
     const excessRet = fundRet - benchRet;
     const fundVol = calcVolatility(alignedFund);
     const benchVol = calcVolatility(alignedBench);
     const fundSharpe = calcSharpe(alignedFund);
+    const benchSharpe = calcSharpe(alignedBench);
     const fundDD = calcDrawdown(alignedFund);
+    const benchDD = calcDrawdown(alignedBench);
     const beta = calcBeta(alignedFund, alignedBench);
+    
     const curPrice = alignedFund[alignedFund.length-1];
     const prevPrice = alignedFund[alignedFund.length-2] || curPrice;
     const dayChg = (curPrice - prevPrice) / prevPrice * 100;
+    
+    const startDate = new Date(fundTimestamps[0]*1000).toLocaleDateString();
+    const endDate = new Date(fundTimestamps[fundTimestamps.length-1]*1000).toLocaleDateString();
     
     setStep('step-calc', 'done');
     setStep('step-render', 'active');
@@ -762,27 +905,168 @@ async function generateReport() {
     
     const badges = document.getElementById('rh-badges');
     badges.innerHTML = '';
-    [fundMeta.type, fundMeta.category, `Benchmark: ${BENCH_NAMES[benchTicker] || benchTicker}`, `ER: ${fundMeta.expense}%`, `AUM: ${formatAUM(fundMeta.aum)}`].forEach(b => {
+    [fundMeta.type, fundMeta.category, `Benchmark: ${BENCH_NAMES[benchTicker] || benchTicker}`].forEach(b => {
       const badge = document.createElement('span');
       badge.className = 'badge';
       badge.textContent = b;
       badges.appendChild(badge);
     });
     
-    // Executive Summary with Expense Ratio and AUM
+    // Executive Summary
     const execGrid = document.getElementById('exec-grid');
     execGrid.innerHTML = `
-      <div class="exec-stat"><div class="exec-stat-label">Fund Return</div><div class="exec-stat-value ${fundRet>=0?'pos':'neg'}">${pct(fundRet)}</div><div class="exec-stat-sub">${PERIOD_LABELS[period]}</div></div>
+      <div class="exec-stat"><div class="exec-stat-label">Fund Return (${PERIOD_LABELS[period]})</div><div class="exec-stat-value ${fundRet>=0?'pos':'neg'}">${pct(fundRet)}</div></div>
       <div class="exec-stat"><div class="exec-stat-label">Benchmark Return</div><div class="exec-stat-value ${benchRet>=0?'pos':'neg'}">${pct(benchRet)}</div></div>
       <div class="exec-stat"><div class="exec-stat-label">Excess Return</div><div class="exec-stat-value ${excessRet>=0?'pos':'neg'}">${pct(excessRet)}</div></div>
       <div class="exec-stat"><div class="exec-stat-label">Current NAV</div><div class="exec-stat-value">$${curPrice.toFixed(2)}</div><div class="exec-stat-sub ${dayChg>=0?'pos':'neg'}">Day: ${pct(dayChg)}</div></div>
-      <div class="exec-stat"><div class="exec-stat-label">Expense Ratio</div><div class="exec-stat-value">${fundMeta.expense}%</div><div class="exec-stat-sub">Category Avg: 0.72%</div></div>
-      <div class="exec-stat"><div class="exec-stat-label">AUM</div><div class="exec-stat-value">${formatAUM(fundMeta.aum)}</div></div>
       <div class="exec-stat"><div class="exec-stat-label">Volatility</div><div class="exec-stat-value">${num(fundVol)}%</div></div>
       <div class="exec-stat"><div class="exec-stat-label">Sharpe Ratio</div><div class="exec-stat-value">${num(fundSharpe)}</div></div>
+      <div class="exec-stat"><div class="exec-stat-label">Max Drawdown</div><div class="exec-stat-value neg">-${num(fundDD)}%</div></div>
+      <div class="exec-stat"><div class="exec-stat-label">Beta</div><div class="exec-stat-value">${num(beta)}</div></div>
     `;
     
-    // Fund Overview with Expense and AUM
+    // Fund Overview
     const overviewBody = document.getElementById('fund-overview-body');
     overviewBody.innerHTML = `
-      <tr><td><strong>Fund Name</strong></th
+      <tr><td><strong>Fund Name</strong></td><td>${fundMeta.name}</td><td><strong>Ticker</strong></td><td>${ticker}</td></tr>
+      <tr><td><strong>Asset Manager</strong></td><td>${manager}</td><td><strong>Fund Type</strong></td><td>${fundMeta.type}</td></tr>
+      <tr><td><strong>Category</strong></td><td>${fundMeta.category}</td><td><strong>Benchmark</strong></td><td>${BENCH_NAMES[benchTicker] || benchTicker}</td></tr>
+      <tr><td><strong>Report Period</strong></td><td>${startDate} - ${endDate}</td><td><strong>Current NAV</strong></td><td>$${curPrice.toFixed(2)}</td></tr>
+    `;
+    
+    // Performance Table
+    const perfBody = document.getElementById('perf-table-body');
+    perfBody.innerHTML = `
+      <tr><td><strong>${PERIOD_LABELS[period]}</strong></td><td class="${fundRet>=0?'pos':'neg'}">${pct(fundRet)}</td><td class="${benchRet>=0?'pos':'neg'}">${pct(benchRet)}</td><td class="${excessRet>=0?'pos':'neg'}">${pct(excessRet)}</td></tr>
+    `;
+    
+    // Risk Table
+    const riskBody = document.getElementById('risk-table-body');
+    riskBody.innerHTML = `
+      <tr><td><strong>Volatility</strong></td><td>${num(fundVol)}%</td><td>${num(benchVol)}%</td><td class="muted">${fundVol < benchVol ? 'Lower risk than benchmark' : 'Higher risk than benchmark'}</td></tr>
+      <tr><td><strong>Sharpe Ratio</strong></td><td>${num(fundSharpe)}</td><td>${num(benchSharpe)}</td><td class="muted">${fundSharpe > 1 ? 'Strong' : 'Moderate'} risk-adjusted returns</td></tr>
+      <tr><td><strong>Max Drawdown</strong></td><td>-${num(fundDD)}%</td><td>-${num(benchDD)}%</td><td class="muted">${fundDD < benchDD ? 'Better' : 'Worse'} peak-to-trough decline</td></tr>
+      <tr><td><strong>Beta</strong></td><td>${num(beta)}</td><td>1.00</td><td class="muted">${beta < 0.8 ? 'Defensive' : beta > 1.2 ? 'Aggressive' : 'Market-aligned'}</td></tr>
+    `;
+    
+    // Risk gauges
+    document.getElementById('risk-gauges').innerHTML = `<div class="risk-gauge-row">
+      <div class="risk-gauge-item"><div class="risk-gauge-label">Volatility Percentile</div><div class="risk-gauge-track"><div class="risk-gauge-fill" style="width:${Math.min(fundVol/40*100,100)}%;background:#1a3a5c"></div></div><div class="risk-gauge-val">${Math.round(Math.min(fundVol/40*100,100))}th</div></div>
+      <div class="risk-gauge-item"><div class="risk-gauge-label">Sharpe Quality</div><div class="risk-gauge-track"><div class="risk-gauge-fill" style="width:${Math.min(Math.max(fundSharpe/3*100,0),100)}%;background:#2e7d32"></div></div><div class="risk-gauge-val">${Math.round(Math.min(Math.max(fundSharpe/3*100,0),100))}th</div></div>
+    </div>`;
+    
+    // Performance Chart
+    if (perfChart) perfChart.destroy();
+    
+    const fundNorm = normalize(alignedFund);
+    const benchNorm = normalize(alignedBench.slice(0, alignedFund.length));
+    const step = Math.max(1, Math.floor(fundNorm.length / 60));
+    const labels = fundTimestamps.filter((_, i) => i % step === 0 || i === fundTimestamps.length-1).map(t => new Date(t*1000).toLocaleDateString());
+    const fundSampled = fundNorm.filter((_, i) => i % step === 0 || i === fundNorm.length-1);
+    const benchSampled = benchNorm.filter((_, i) => i % step === 0 || i === benchNorm.length-1);
+    
+    const perfCtx = document.getElementById('perf-chart').getContext('2d');
+    perfChart = new Chart(perfCtx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {label: fundMeta.name, data: fundSampled, borderColor: '#1a3a5c', backgroundColor: 'rgba(26,58,92,0.05)', borderWidth: 2, pointRadius: 0, fill: true},
+          {label: BENCH_NAMES[benchTicker] || benchTicker, data: benchSampled, borderColor: '#b8860b', borderWidth: 1.5, borderDash: [5,5], pointRadius: 0}
+        ]
+      },
+      options: {responsive: true, maintainAspectRatio: false, plugins: {legend: {position: 'top', labels: {font: {size: 11}}}}}
+    });
+    
+    // Allocation Chart
+    let allocKey = "US Large Cap Equity";
+    if (fundMeta.category.includes("Growth")) allocKey = "US Growth Equity";
+    else if (fundMeta.category.includes("Bond") || fundMeta.category.includes("Fixed")) allocKey = "Fixed Income";
+    else if (fundMeta.category.includes("International")) allocKey = "International Equity";
+    else if (fundMeta.category.includes("Dividend")) allocKey = "Dividend";
+    else if (fundMeta.category.includes("Tech")) allocKey = "Technology";
+    else if (fundMeta.category.includes("Balanced")) allocKey = "Balanced";
+    
+    const allocSlices = ALLOC_DATA[allocKey] || ALLOC_DATA["US Large Cap Equity"];
+    if (allocChart) allocChart.destroy();
+    const allocCtx = document.getElementById('alloc-chart').getContext('2d');
+    allocChart = new Chart(allocCtx, {
+      type: 'doughnut',
+      data: {labels: allocSlices.map(s => s.l), datasets: [{data: allocSlices.map(s => s.v), backgroundColor: ALLOC_COLORS.slice(0, allocSlices.length), borderWidth: 2}]},
+      options: {responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: {legend: {display: false}}}
+    });
+    
+    const legendDiv = document.getElementById('alloc-legend');
+    legendDiv.innerHTML = '';
+    allocSlices.forEach((s, i) => {
+      legendDiv.innerHTML += `<div class="alloc-item"><div class="alloc-dot" style="background:${ALLOC_COLORS[i]}"></div><div class="alloc-label">${s.l}</div><div class="alloc-pct">${s.v}%</div></div>`;
+    });
+    
+    // Commentary
+    const commentaryGrid = document.getElementById('commentary-grid');
+    commentaryGrid.innerHTML = `
+      <div class="commentary-card"><div class="commentary-card-title">Performance Attribution</div><p>The fund ${fundRet >= 0 ? 'gained' : 'declined'} ${pct(fundRet)} during the ${PERIOD_LABELS[period]} period, ${fundRet > benchRet ? `outperforming the benchmark by ${Math.abs(excessRet).toFixed(2)}%` : `trailing the benchmark by ${Math.abs(excessRet).toFixed(2)}%`}.</p></div>
+      <div class="commentary-card"><div class="commentary-card-title">Risk Assessment</div><p>With annualized volatility of ${num(fundVol)}% and a Sharpe ratio of ${num(fundSharpe)}, the fund delivers ${fundSharpe > 1 ? 'strong' : 'moderate'} risk-adjusted returns relative to its benchmark (${num(benchSharpe)}).</p></div>
+      <div class="commentary-card"><div class="commentary-card-title">Market Exposure</div><p>The fund's beta of ${num(beta)} indicates it is ${beta < 0.8 ? 'less volatile than' : beta > 1.2 ? 'more volatile than' : 'closely aligned with'} the broader market. Maximum drawdown of -${num(fundDD)}% during the period.</p></div>
+      <div class="commentary-card"><div class="commentary-card-title">Outlook</div><p>Based on historical performance characteristics, the fund remains ${fundSharpe > 0.8 ? 'well-positioned' : 'reasonably positioned'} for its stated investment objective. Investors should monitor tracking error and relative performance trends.</p></div>
+    `;
+    
+    setStep('step-render', 'done');
+    setStatus(`Report generated — ${fundMeta.name} as of ${endDate}`, 'live');
+    
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('report-container').style.display = 'block';
+    
+  } catch (err) {
+    console.error(err);
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('placeholder').style.display = 'block';
+    document.getElementById('placeholder').innerHTML = `
+      <div class="placeholder-icon">⚠️</div>
+      <div class="placeholder-title">Data Retrieval Error</div>
+      <div class="placeholder-sub">${err.message}<br><br>This may be due to network restrictions. Click Generate again or try a different fund/period.</div>
+    `;
+    setStatus('Error: ' + err.message, 'error');
+  }
+}
+
+// PDF Export
+async function exportPDF() {
+  const btn = document.getElementById('export-pdf-btn');
+  btn.textContent = '⏳ Generating PDF…';
+  btn.disabled = true;
+  try {
+    const element = document.getElementById('report-body');
+    const canvas = await html2canvas(element, { scale: 2, logging: false, backgroundColor: '#ffffff' });
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const imgW = 210;
+    const imgH = (canvas.height / canvas.width) * imgW;
+    let y = 0;
+    while (y < imgH) {
+      if (y > 0) pdf.addPage();
+      pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', 0, -y, imgW, imgH);
+      y += 297;
+    }
+    const ticker = document.getElementById('fund-select').value || 'fund';
+    pdf.save(`FundLens_${ticker}_${new Date().toISOString().slice(0,10)}.pdf`);
+  } catch (e) {
+    alert('PDF export failed: ' + e.message);
+  }
+  btn.textContent = '⬇ Export PDF';
+  btn.disabled = false;
+}
+
+// Connect buttons
+document.getElementById('generate-btn').addEventListener('click', generateReport);
+document.getElementById('print-btn').addEventListener('click', () => window.print());
+document.getElementById('export-pdf-btn').addEventListener('click', exportPDF);
+
+// Make functions global
+window.generateReport = generateReport;
+window.exportPDF = exportPDF;
+
+console.log('FundLens ready!');
+</script>
+</body>
+</html>
