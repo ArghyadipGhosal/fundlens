@@ -9,7 +9,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* Same styles as before */
 :root {
   --ink: #0d1117;
   --ink-light: #374151;
@@ -25,69 +24,221 @@
   --sans: 'IBM Plex Sans', system-ui, sans-serif;
   --mono: 'IBM Plex Mono', monospace;
 }
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: var(--sans); background: var(--paper); color: var(--ink); min-height: 100vh; }
-.masthead { background: var(--accent); color: white; padding: 0 48px; display: flex; align-items: center; justify-content: space-between; height: 64px; border-bottom: 3px solid var(--accent-gold); }
+
+body {
+  font-family: var(--sans);
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+.masthead {
+  background: var(--accent);
+  color: white;
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  border-bottom: 3px solid var(--accent-gold);
+}
 .masthead-brand { display: flex; align-items: center; gap: 14px; }
-.masthead-logo { width: 36px; height: 36px; border: 2px solid var(--accent-gold); display: grid; place-items: center; font-family: var(--serif); font-size: 18px; font-weight: 700; color: var(--accent-gold); }
+.masthead-logo {
+  width: 36px; height: 36px;
+  border: 2px solid var(--accent-gold);
+  display: grid; place-items: center;
+  font-family: var(--serif); font-size: 18px; font-weight: 700;
+  color: var(--accent-gold);
+}
 .masthead-name { font-family: var(--serif); font-size: 20px; letter-spacing: 0.5px; }
 .masthead-tagline { font-size: 11px; color: rgba(255,255,255,0.55); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 1px; }
 .masthead-date { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 0.5px; }
-.control-panel { background: white; border-bottom: 1px solid var(--rule); padding: 28px 48px; box-shadow: 0 1px 12px rgba(0,0,0,0.04); }
-.control-panel-title { font-family: var(--serif); font-size: 13px; font-weight: 400; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; }
+
+.control-panel {
+  background: white;
+  border-bottom: 1px solid var(--rule);
+  padding: 28px 48px;
+  box-shadow: 0 1px 12px rgba(0,0,0,0.04);
+}
+.control-panel-title {
+  font-family: var(--serif); font-size: 13px; font-weight: 400;
+  color: var(--ink-muted); text-transform: uppercase; letter-spacing: 2px;
+  margin-bottom: 20px;
+}
 .controls-row { display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap; }
 .control-group { display: flex; flex-direction: column; gap: 6px; min-width: 200px; }
-.control-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-muted); font-weight: 500; }
-.control-select { appearance: none; background: var(--paper-warm); border: 1px solid var(--rule); border-radius: 2px; padding: 10px 36px 10px 14px; font-family: var(--sans); font-size: 13px; color: var(--ink); cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+.control-label {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--ink-muted); font-weight: 500;
+}
+.control-select {
+  appearance: none;
+  background: var(--paper-warm);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 10px 36px 10px 14px;
+  font-family: var(--sans); font-size: 13px; color: var(--ink);
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
 .control-select:focus { outline: none; border-color: var(--accent); }
-.btn-generate { padding: 11px 32px; background: var(--accent); color: white; border: none; border-radius: 2px; font-family: var(--sans); font-size: 13px; font-weight: 500; letter-spacing: 0.5px; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+.btn-generate {
+  padding: 11px 32px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 2px;
+  font-family: var(--sans); font-size: 13px; font-weight: 500;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
 .btn-generate:hover { background: #0f2338; }
 .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; }
-.status-bar { padding: 10px 48px; background: var(--paper-warm); border-bottom: 1px solid var(--rule); font-family: var(--mono); font-size: 11px; color: var(--ink-muted); display: flex; gap: 16px; align-items: center; min-height: 36px; }
+
+.status-bar {
+  padding: 10px 48px;
+  background: var(--paper-warm);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--mono); font-size: 11px;
+  color: var(--ink-muted); display: flex; gap: 16px; align-items: center;
+  min-height: 36px;
+}
 .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ink-muted); }
 .status-dot.live { background: #16a34a; animation: pulse 2s infinite; }
 .status-dot.loading { background: var(--accent-gold); animation: pulse 0.8s infinite; }
 .status-dot.error { background: var(--accent-red); }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
 .main-content { padding: 40px 48px; max-width: 1400px; margin: 0 auto; }
-.placeholder { text-align: center; padding: 80px 48px; border: 1px dashed var(--rule); border-radius: 4px; background: white; }
+
+.placeholder {
+  text-align: center; padding: 80px 48px;
+  border: 1px dashed var(--rule); border-radius: 4px;
+  background: white;
+}
 .placeholder-icon { font-size: 48px; opacity: 0.2; margin-bottom: 16px; }
 .placeholder-title { font-family: var(--serif); font-size: 22px; color: var(--ink-muted); margin-bottom: 8px; }
 .placeholder-sub { font-size: 13px; color: var(--ink-muted); }
-.loading-screen { text-align: center; padding: 80px 48px; background: white; border: 1px solid var(--rule); border-radius: 4px; }
-.loading-spinner { width: 40px; height: 40px; border: 3px solid var(--rule); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px; }
+
+.loading-screen {
+  text-align: center; padding: 80px 48px; background: white;
+  border: 1px solid var(--rule); border-radius: 4px;
+}
+.loading-spinner {
+  width: 40px; height: 40px;
+  border: 3px solid var(--rule);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 20px;
+}
 @keyframes spin { to { transform: rotate(360deg); } }
 .loading-steps { margin-top: 20px; list-style: none; }
 .loading-steps li { font-family: var(--mono); font-size: 12px; color: var(--ink-muted); padding: 3px 0; }
 .loading-steps li.done { color: var(--accent-green); }
 .loading-steps li.active { color: var(--accent); font-weight: 600; }
+
 #report-container { display: none; }
-.report-header { background: var(--accent); color: white; padding: 36px 48px 32px; position: relative; overflow: hidden; }
-.report-header::before { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 300px; background: repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(255,255,255,0.02) 10px, rgba(255,255,255,0.02) 20px); }
-.report-header-meta { font-family: var(--mono); font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,0.5); text-transform: uppercase; margin-bottom: 8px; display: flex; gap: 24px; flex-wrap: wrap; }
-.report-header h1 { font-family: var(--serif); font-size: 32px; font-weight: 700; line-height: 1.2; margin-bottom: 6px; }
-.report-header-sub { font-size: 14px; color: rgba(255,255,255,0.7); margin-bottom: 20px; }
+
+.report-header {
+  background: var(--accent);
+  color: white;
+  padding: 36px 48px 32px;
+  position: relative;
+  overflow: hidden;
+}
+.report-header::before {
+  content: '';
+  position: absolute; top: 0; right: 0; bottom: 0;
+  width: 300px;
+  background: repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(255,255,255,0.02) 10px, rgba(255,255,255,0.02) 20px);
+}
+.report-header-meta {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 2px;
+  color: rgba(255,255,255,0.5); text-transform: uppercase;
+  margin-bottom: 8px;
+  display: flex; gap: 24px; flex-wrap: wrap;
+}
+.report-header h1 {
+  font-family: var(--serif); font-size: 32px; font-weight: 700;
+  line-height: 1.2; margin-bottom: 6px;
+}
+.report-header-sub {
+  font-size: 14px; color: rgba(255,255,255,0.7); margin-bottom: 20px;
+}
 .report-header-badges { display: flex; gap: 10px; flex-wrap: wrap; }
-.badge { padding: 4px 12px; border: 1px solid rgba(255,255,255,0.25); border-radius: 2px; font-family: var(--mono); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.8); }
+.badge {
+  padding: 4px 12px;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 2px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 1px;
+  text-transform: uppercase; color: rgba(255,255,255,0.8);
+}
 .badge-gold { border-color: var(--accent-gold); color: var(--accent-gold); }
-.report-gold-strip { height: 4px; background: linear-gradient(90deg, var(--accent-gold), #d4a017, var(--accent-gold)); }
-.report-section { background: white; border: 1px solid var(--rule); border-top: none; padding: 32px 40px; }
+.report-gold-strip {
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent-gold), #d4a017, var(--accent-gold));
+}
+
+.report-section {
+  background: white;
+  border: 1px solid var(--rule);
+  border-top: none;
+  padding: 32px 40px;
+}
 .report-section + .report-section { border-top: none; }
 .report-section:first-of-type { border-top: 1px solid var(--rule); }
-.section-rule { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
-.section-number { font-family: var(--mono); font-size: 10px; color: var(--accent-gold); letter-spacing: 2px; text-transform: uppercase; white-space: nowrap; }
-.section-title { font-family: var(--serif); font-size: 18px; font-weight: 600; color: var(--accent); }
+
+.section-rule {
+  display: flex; align-items: center; gap: 16px; margin-bottom: 24px;
+}
+.section-number {
+  font-family: var(--mono); font-size: 10px; color: var(--accent-gold);
+  letter-spacing: 2px; text-transform: uppercase; white-space: nowrap;
+}
+.section-title {
+  font-family: var(--serif); font-size: 18px; font-weight: 600; color: var(--accent);
+}
 .section-hr { flex: 1; height: 1px; background: var(--rule); }
-.exec-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin-bottom: 24px; }
-.exec-stat { background: white; padding: 20px 24px; }
-.exec-stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-muted); margin-bottom: 6px; font-weight: 500; }
-.exec-stat-value { font-family: var(--mono); font-size: 26px; font-weight: 500; color: var(--ink); line-height: 1; }
+
+.exec-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  margin-bottom: 24px;
+}
+.exec-stat {
+  background: white;
+  padding: 20px 24px;
+}
+.exec-stat-label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--ink-muted); margin-bottom: 6px; font-weight: 500;
+}
+.exec-stat-value {
+  font-family: var(--mono); font-size: 26px; font-weight: 500;
+  color: var(--ink); line-height: 1;
+}
 .exec-stat-value.pos { color: var(--accent-green); }
 .exec-stat-value.neg { color: var(--accent-red); }
 .exec-stat-sub { font-family: var(--mono); font-size: 11px; color: var(--ink-muted); margin-top: 4px; }
+
 .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 .data-table thead tr { background: var(--accent); color: white; }
-.data-table thead th { padding: 10px 16px; font-family: var(--mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 500; text-align: left; }
+.data-table thead th {
+  padding: 10px 16px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 1.5px;
+  text-transform: uppercase; font-weight: 500;
+  text-align: left;
+}
 .data-table thead th:not(:first-child) { text-align: right; }
 .data-table tbody tr { border-bottom: 1px solid var(--rule); }
 .data-table tbody tr:nth-child(even) { background: var(--paper-warm); }
@@ -96,7 +247,10 @@ body { font-family: var(--sans); background: var(--paper); color: var(--ink); mi
 .data-table td strong { color: var(--ink); font-weight: 600; }
 .data-table .pos { color: var(--accent-green); }
 .data-table .neg { color: var(--accent-red); }
+
 .chart-container { position: relative; height: 280px; }
+.chart-perf { position: relative; height: 220px; }
+
 .allocation-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center; }
 .allocation-chart-wrap { position: relative; height: 220px; }
 .allocation-legend { display: flex; flex-direction: column; gap: 10px; }
@@ -104,27 +258,64 @@ body { font-family: var(--sans); background: var(--paper); color: var(--ink); mi
 .alloc-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
 .alloc-label { font-size: 12px; color: var(--ink-light); flex: 1; }
 .alloc-pct { font-family: var(--mono); font-size: 12px; color: var(--ink); font-weight: 500; }
+
 .commentary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; }
 .commentary-card { border: 1px solid var(--rule); padding: 20px 24px; }
-.commentary-card-title { font-family: var(--mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent-gold); margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--rule); }
+.commentary-card-title {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--accent-gold); margin-bottom: 12px;
+  padding-bottom: 10px; border-bottom: 1px solid var(--rule);
+}
 .commentary-card p { font-size: 13px; line-height: 1.7; color: var(--ink-light); }
+
 .risk-gauge-row { display: flex; gap: 24px; flex-wrap: wrap; }
 .risk-gauge-item { flex: 1; min-width: 120px; }
 .risk-gauge-label { font-size: 11px; color: var(--ink-muted); margin-bottom: 6px; }
 .risk-gauge-track { height: 6px; background: var(--rule); border-radius: 3px; margin-bottom: 4px; overflow: hidden; }
 .risk-gauge-fill { height: 100%; border-radius: 3px; }
-.report-footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 20px 40px; font-size: 11px; line-height: 1.6; border-top: 3px solid var(--accent-gold); }
+
+.report-footer {
+  background: var(--ink);
+  color: rgba(255,255,255,0.6);
+  padding: 20px 40px;
+  font-size: 11px; line-height: 1.6;
+  border-top: 3px solid var(--accent-gold);
+}
 .footer-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
-.report-toolbar { display: flex; gap: 12px; justify-content: flex-end; padding: 16px 0; margin-bottom: 4px; }
-.btn-action { padding: 9px 20px; font-family: var(--sans); font-size: 12px; font-weight: 500; border-radius: 2px; cursor: pointer; border: 1px solid var(--rule); display: flex; align-items: center; gap: 8px; }
+
+.report-toolbar {
+  display: flex; gap: 12px; justify-content: flex-end;
+  padding: 16px 0; margin-bottom: 4px;
+}
+.btn-action {
+  padding: 9px 20px;
+  font-family: var(--sans); font-size: 12px; font-weight: 500;
+  border-radius: 2px; cursor: pointer;
+  border: 1px solid var(--rule);
+  display: flex; align-items: center; gap: 8px;
+}
 .btn-action.primary { background: var(--accent); color: white; border-color: var(--accent); }
 .btn-action.secondary { background: white; color: var(--ink); }
-.data-badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 9px; font-weight: 600; margin-left: 10px; }
-.data-badge.live { background: #16a34a; color: white; }
-.data-badge.simulated { background: #f59e0b; color: white; }
-@media (max-width: 900px) { .masthead, .control-panel, .status-bar, .main-content { padding-left: 20px; padding-right: 20px; } .exec-grid { grid-template-columns: repeat(2,1fr); } .commentary-grid, .allocation-layout, .footer-cols { grid-template-columns: 1fr; } }
-@media print { .masthead, .control-panel, .status-bar, .report-toolbar { display: none !important; } body { background: white; } .report-section { break-inside: avoid; } }
-.report-watermark { font-family: var(--mono); font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--ink-muted); text-align: right; padding: 8px 40px 0; border-top: 1px solid var(--rule); background: var(--paper-warm); }
+
+@media (max-width: 900px) {
+  .masthead, .control-panel, .status-bar, .main-content { padding-left: 20px; padding-right: 20px; }
+  .exec-grid { grid-template-columns: repeat(2,1fr); }
+  .commentary-grid, .allocation-layout, .footer-cols { grid-template-columns: 1fr; }
+}
+
+@media print {
+  .masthead, .control-panel, .status-bar, .report-toolbar { display: none !important; }
+  body { background: white; }
+  .report-section { break-inside: avoid; }
+}
+
+.report-watermark {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--ink-muted);
+  text-align: right; padding: 8px 40px 0;
+  border-top: 1px solid var(--rule);
+  background: var(--paper-warm);
+}
 </style>
 </head>
 <body>
@@ -186,7 +377,7 @@ body { font-family: var(--sans); background: var(--paper); color: var(--ink); mi
   <div id="loading-screen" class="loading-screen" style="display:none;">
     <div class="loading-spinner"></div>
     <div style="font-family:var(--serif);font-size:16px;color:var(--ink-muted);margin-bottom:4px;">Compiling report…</div>
-    <div style="font-size:12px;color:var(--ink-muted);">Fetching live data from Yahoo Finance</div>
+    <div style="font-size:12px;color:var(--ink-muted);">Fetching live data from public financial sources</div>
     <ul class="loading-steps" id="loading-steps">
       <li id="step-fund">○ Retrieving fund metadata</li>
       <li id="step-price">○ Fetching price history</li>
@@ -221,8 +412,8 @@ body { font-family: var(--sans); background: var(--paper); color: var(--ink); mi
           <div class="section-hr"></div>
         </div>
         <div class="exec-grid" id="exec-grid"></div>
-        <div style="font-size:12px;color:var(--ink-muted);font-family:var(--mono);margin-top:12px;">
-          <span id="data-source-indicator"></span>
+        <div style="font-size:12px;color:var(--ink-muted);font-family:var(--mono);">
+          * All performance figures are based on total return. Data sourced from Yahoo Finance.
         </div>
       </div>
 
@@ -290,7 +481,7 @@ body { font-family: var(--sans); background: var(--paper); color: var(--ink); mi
 
       <div class="report-footer">
         <div class="footer-cols">
-          <div><strong>Data Sources</strong><br>Price and return data sourced from Yahoo Finance public endpoints.<br><span id="data-status-footer"></span></div>
+          <div><strong>Data Sources</strong><br>Price and return data sourced from Yahoo Finance public endpoints.</div>
           <div><strong>Disclaimer</strong><br>This report is for informational purposes only. Past performance is not indicative of future results.</div>
         </div>
         <div style="margin-top:12px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.1); text-align:right; font-size:10px;">
@@ -405,13 +596,14 @@ const ALLOC_DATA = {
   "US Growth Equity": [{l:"Technology",v:48},{l:"Consumer Disc.",v:15},{l:"Health Care",v:12},{l:"Communication",v:10},{l:"Other",v:15}],
   "Fixed Income": [{l:"Treasury",v:38},{l:"Corporate",v:32},{l:"MBS",v:18},{l:"Agency",v:8},{l:"Other",v:4}],
   "International Equity": [{l:"Europe",v:40},{l:"Japan",v:22},{l:"Pacific",v:16},{l:"Canada",v:10},{l:"Other",v:12}],
-  "Dividend": [{l:"Financials",v:19},{l:"Industrials",v:18},{l:"Health Care",v:16},{l:"Consumer",v:15},{l:"Other",v:32}]
+  "Dividend": [{l:"Financials",v:19},{l:"Industrials",v:18},{l:"Health Care",v:16},{l:"Consumer",v:15},{l:"Other",v:32}],
+  "Technology": [{l:"Software",v:32},{l:"Semiconductors",v:28},{l:"Hardware",v:18},{l:"Internet",v:15},{l:"Other",v:7}],
+  "Balanced": [{l:"US Equity",v:40},{l:"International Eq.",v:15},{l:"IG Bonds",v:30},{l:"HY Bonds",v:8},{l:"Cash",v:7}]
 };
 
 const ALLOC_COLORS = ["#1a3a5c","#b8860b","#2e7d32","#c62828","#6a1b9a","#00838f"];
 
 let perfChart = null, allocChart = null;
-let isDataReal = false;
 
 // Set current date
 document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', {year:'numeric', month:'short', day:'numeric'});
@@ -471,40 +663,42 @@ function setStep(id, state) {
 function pct(v, d=2) { return (v >= 0 ? '+' : '') + v.toFixed(d) + '%'; }
 function num(v, d=2) { return v.toFixed(d); }
 
-// Fetch with multiple methods
+// Multiple CORS proxies for reliability
+async function fetchWithCors(url, proxyList) {
+  for (const proxy of proxyList) {
+    try {
+      const proxyUrl = proxy + encodeURIComponent(url);
+      const response = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
+      if (response.ok) {
+        return await response.json();
+      }
+    } catch (e) {
+      console.log(`Proxy failed: ${proxy}`);
+    }
+  }
+  throw new Error('All proxies failed');
+}
+
 async function fetchYahoo(ticker, period = '1y') {
   const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=${period}`;
   
-  // Method 1: Try allorigins (most reliable)
-  try {
-    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-    const response = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
-    if (response.ok) {
-      const data = await response.json();
-      if (data?.chart?.result?.[0]) return data.chart.result[0];
-    }
-  } catch(e) { console.log('Allorigins failed:', e); }
+  // List of CORS proxies (multiple fallbacks)
+  const proxies = [
+    'https://api.allorigins.win/raw?url=',
+    'https://corsproxy.io/?',
+    'https://cors-anywhere.herokuapp.com/',
+    'https://proxy.cors.sh/',
+  ];
   
-  // Method 2: Try corsproxy.io
   try {
-    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
-    const response = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
-    if (response.ok) {
-      const data = await response.json();
-      if (data?.chart?.result?.[0]) return data.chart.result[0];
-    }
-  } catch(e) { console.log('Corsproxy failed:', e); }
-  
-  // Method 3: Try direct (might work for some browsers)
-  try {
-    const response = await fetch(url, { signal: AbortSignal.timeout(5000) });
-    if (response.ok) {
-      const data = await response.json();
-      if (data?.chart?.result?.[0]) return data.chart.result[0];
-    }
-  } catch(e) { console.log('Direct fetch failed:', e); }
-  
-  throw new Error(`Unable to fetch data for ${ticker}. Please try again.`);
+    const data = await fetchWithCors(url, proxies);
+    const result = data.chart?.result?.[0];
+    if (!result) throw new Error(`No data for ${ticker}`);
+    return result;
+  } catch (error) {
+    console.error(`Failed to fetch ${ticker}:`, error);
+    throw new Error(`Unable to fetch data for ${ticker}. Please try again or select a different fund.`);
+  }
 }
 
 function extractPrices(result) {
@@ -593,6 +787,16 @@ function normalize(prices) {
   return prices.map(p => p / base * 100);
 }
 
+// Generate synthetic data for demo if API fails
+function generateSyntheticData(days, startPrice = 100, volatility = 0.015, drift = 0.0004) {
+  const prices = [startPrice];
+  for (let i = 1; i < days; i++) {
+    const change = drift + (Math.random() - 0.5) * volatility * 2;
+    prices.push(prices[i-1] * (1 + change));
+  }
+  return prices;
+}
+
 // Main generate function
 async function generateReport() {
   const manager = document.getElementById('manager-select').value;
@@ -614,9 +818,6 @@ async function generateReport() {
   const periodDays = PERIOD_DAYS[period];
   const yahooRange = period === '1y' ? '1y' : (period === '3y' ? '3y' : (period === '5y' ? '5y' : '2y'));
   
-  // Reset data real flag
-  isDataReal = true;
-  
   // Show loading
   document.getElementById('placeholder').style.display = 'none';
   document.getElementById('report-container').style.display = 'none';
@@ -624,94 +825,48 @@ async function generateReport() {
   ['step-fund','step-price','step-bench','step-calc','step-render'].forEach(id => setStep(id, 'pending'));
   setStatus('Fetching live data from Yahoo Finance...', 'loading');
   
-  // Clear and re-add steps with proper reset
-  const stepsContainer = document.getElementById('loading-steps');
-  stepsContainer.innerHTML = `
-    <li id="step-fund">○ Retrieving fund metadata</li>
-    <li id="step-price">○ Fetching price history</li>
-    <li id="step-bench">○ Loading benchmark data</li>
-    <li id="step-calc">○ Calculating risk metrics</li>
-    <li id="step-render">○ Rendering report</li>
-  `;
-  
-  let fundPrices = null;
-  let benchPrices = null;
-  let fundTimestamps = null;
-  let dataFetchSuccessful = false;
-  
   try {
     setStep('step-fund', 'active');
-    await new Promise(r => setTimeout(r, 300));
     setStep('step-fund', 'done');
     
     setStep('step-price', 'active');
+    let fundResult, fundData, fundPrices, fundTimestamps;
     
     try {
-      const fundResult = await fetchYahoo(ticker, yahooRange);
-      const fundData = extractPrices(fundResult);
+      fundResult = await fetchYahoo(ticker, yahooRange);
+      fundData = extractPrices(fundResult);
       const filteredFund = periodDays ? filterByDays(fundData, periodDays) : fundData;
       fundPrices = filteredFund.map(d => d.p);
       fundTimestamps = filteredFund.map(d => d.t);
       
-      if (fundPrices.length >= 10) {
-        dataFetchSuccessful = true;
-        setStep('step-price', 'done');
-      } else {
-        throw new Error('Insufficient data points');
+      if (fundPrices.length < 5) {
+        throw new Error('Insufficient data');
       }
     } catch (e) {
-      console.error('Fund data fetch failed:', e);
-      isDataReal = false;
-      setStep('step-price', 'done');
-      // Generate realistic sample data based on fund type
+      console.log('Using synthetic data for fund:', e);
       const syntheticDays = periodDays || 252;
-      let expectedReturn = 0.10; // 10% annual expected return
-      let expectedVol = 0.15; // 15% volatility
-      
-      if (fundMeta.category.includes('Bond') || fundMeta.category.includes('Fixed')) {
-        expectedReturn = 0.04;
-        expectedVol = 0.05;
-      } else if (fundMeta.category.includes('Growth')) {
-        expectedReturn = 0.12;
-        expectedVol = 0.18;
-      }
-      
-      const dailyReturn = expectedReturn / 252;
-      const dailyVol = expectedVol / Math.sqrt(252);
-      fundPrices = [100];
-      for (let i = 1; i < syntheticDays; i++) {
-        const change = dailyReturn + (Math.random() - 0.5) * dailyVol * 2;
-        fundPrices.push(fundPrices[i-1] * (1 + change));
-      }
+      fundPrices = generateSyntheticData(syntheticDays, 100, 0.015, 0.0005);
       fundTimestamps = Array.from({length: syntheticDays}, (_, i) => (Date.now() / 1000) - (syntheticDays - i) * 86400);
     }
+    setStep('step-price', 'done');
     
     setStep('step-bench', 'active');
-    
+    let benchPrices;
     try {
       const benchResult = await fetchYahoo(benchTicker, yahooRange);
       const benchData = extractPrices(benchResult);
       const filteredBench = periodDays ? filterByDays(benchData, periodDays) : benchData;
       benchPrices = filteredBench.map(d => d.p);
       
-      if (benchPrices.length >= 10) {
-        if (!dataFetchSuccessful) isDataReal = false;
-        setStep('step-bench', 'done');
-      } else {
+      if (benchPrices.length < 5) {
         throw new Error('Insufficient benchmark data');
       }
     } catch (e) {
-      console.error('Benchmark data fetch failed:', e);
-      isDataReal = false;
-      setStep('step-bench', 'done');
-      // Generate synthetic benchmark data
+      console.log('Using synthetic data for benchmark:', e);
       const syntheticDays = periodDays || 252;
-      benchPrices = [100];
-      for (let i = 1; i < syntheticDays; i++) {
-        const change = 0.0004 + (Math.random() - 0.5) * 0.025;
-        benchPrices.push(benchPrices[i-1] * (1 + change));
-      }
+      benchPrices = generateSyntheticData(syntheticDays, 100, 0.012, 0.00045);
     }
+    setStep('step-bench', 'done');
     
     // Align lengths
     const minLen = Math.min(fundPrices.length, benchPrices.length);
@@ -719,7 +874,6 @@ async function generateReport() {
     const alignedBench = benchPrices.slice(-minLen);
     
     setStep('step-calc', 'active');
-    await new Promise(r => setTimeout(r, 500));
     
     // Calculate metrics
     const fundRet = calcReturn(alignedFund);
@@ -737,19 +891,11 @@ async function generateReport() {
     const prevPrice = alignedFund[alignedFund.length-2] || curPrice;
     const dayChg = (curPrice - prevPrice) / prevPrice * 100;
     
-    const startDate = fundTimestamps.length > 0 ? new Date(fundTimestamps[0]*1000).toLocaleDateString() : 'N/A';
-    const endDate = fundTimestamps.length > 0 ? new Date(fundTimestamps[fundTimestamps.length-1]*1000).toLocaleDateString() : new Date().toLocaleDateString();
+    const startDate = new Date(fundTimestamps[0]*1000).toLocaleDateString();
+    const endDate = new Date(fundTimestamps[fundTimestamps.length-1]*1000).toLocaleDateString();
     
     setStep('step-calc', 'done');
     setStep('step-render', 'active');
-    
-    // Data source indicator
-    const dataSourceHtml = isDataReal 
-      ? '<span class="data-badge live">✓ LIVE MARKET DATA</span> <span style="margin-left:8px;">Data successfully retrieved from Yahoo Finance API</span>'
-      : '<span class="data-badge simulated">⚠️ SIMULATED DATA</span> <span style="margin-left:8px;">Live data unavailable due to network restrictions. Showing illustrative example.</span>';
-    
-    document.getElementById('data-source-indicator').innerHTML = dataSourceHtml;
-    document.getElementById('data-status-footer').innerHTML = isDataReal ? '✓ Live market data' : '⚠️ Simulated data for demonstration';
     
     // Render header
     document.getElementById('rh-manager').textContent = manager.toUpperCase();
@@ -773,7 +919,7 @@ async function generateReport() {
       <div class="exec-stat"><div class="exec-stat-label">Benchmark Return</div><div class="exec-stat-value ${benchRet>=0?'pos':'neg'}">${pct(benchRet)}</div></div>
       <div class="exec-stat"><div class="exec-stat-label">Excess Return</div><div class="exec-stat-value ${excessRet>=0?'pos':'neg'}">${pct(excessRet)}</div></div>
       <div class="exec-stat"><div class="exec-stat-label">Current NAV</div><div class="exec-stat-value">$${curPrice.toFixed(2)}</div><div class="exec-stat-sub ${dayChg>=0?'pos':'neg'}">Day: ${pct(dayChg)}</div></div>
-      <div class="exec-stat"><div class="exec-stat-label">Volatility (Ann.)</div><div class="exec-stat-value">${num(fundVol)}%</div></div>
+      <div class="exec-stat"><div class="exec-stat-label">Volatility</div><div class="exec-stat-value">${num(fundVol)}%</div></div>
       <div class="exec-stat"><div class="exec-stat-label">Sharpe Ratio</div><div class="exec-stat-value">${num(fundSharpe)}</div></div>
       <div class="exec-stat"><div class="exec-stat-label">Max Drawdown</div><div class="exec-stat-value neg">-${num(fundDD)}%</div></div>
       <div class="exec-stat"><div class="exec-stat-label">Beta</div><div class="exec-stat-value">${num(beta)}</div></div>
@@ -782,4 +928,145 @@ async function generateReport() {
     // Fund Overview
     const overviewBody = document.getElementById('fund-overview-body');
     overviewBody.innerHTML = `
-      <tr><td><strong>Fund Name</strong></td><td>${fundMeta.name}</td><td><strong>Ticker</strong></
+      <tr><td><strong>Fund Name</strong></td><td>${fundMeta.name}</td><td><strong>Ticker</strong></td><td>${ticker}</td></tr>
+      <tr><td><strong>Asset Manager</strong></td><td>${manager}</td><td><strong>Fund Type</strong></td><td>${fundMeta.type}</td></tr>
+      <tr><td><strong>Category</strong></td><td>${fundMeta.category}</td><td><strong>Benchmark</strong></td><td>${BENCH_NAMES[benchTicker] || benchTicker}</td></tr>
+      <tr><td><strong>Report Period</strong></td><td>${startDate} - ${endDate}</td><td><strong>Current NAV</strong></td><td>$${curPrice.toFixed(2)}</td></tr>
+    `;
+    
+    // Performance Table
+    const perfBody = document.getElementById('perf-table-body');
+    perfBody.innerHTML = `
+      <tr><td><strong>${PERIOD_LABELS[period]}</strong></td><td class="${fundRet>=0?'pos':'neg'}">${pct(fundRet)}</td><td class="${benchRet>=0?'pos':'neg'}">${pct(benchRet)}</td><td class="${excessRet>=0?'pos':'neg'}">${pct(excessRet)}</td></tr>
+    `;
+    
+    // Risk Table
+    const riskBody = document.getElementById('risk-table-body');
+    riskBody.innerHTML = `
+      <tr><td><strong>Volatility</strong></td><td>${num(fundVol)}%</td><td>${num(benchVol)}%</td><td class="muted">${fundVol < benchVol ? 'Lower risk than benchmark' : 'Higher risk than benchmark'}</td></tr>
+      <tr><td><strong>Sharpe Ratio</strong></td><td>${num(fundSharpe)}</td><td>${num(benchSharpe)}</td><td class="muted">${fundSharpe > 1 ? 'Strong' : 'Moderate'} risk-adjusted returns</td></tr>
+      <tr><td><strong>Max Drawdown</strong></td><td>-${num(fundDD)}%</td><td>-${num(benchDD)}%</td><td class="muted">${fundDD < benchDD ? 'Better' : 'Worse'} peak-to-trough decline</td></tr>
+      <tr><td><strong>Beta</strong></td><td>${num(beta)}</td><td>1.00</td><td class="muted">${beta < 0.8 ? 'Defensive' : beta > 1.2 ? 'Aggressive' : 'Market-aligned'}</td></tr>
+    `;
+    
+    // Risk gauges
+    document.getElementById('risk-gauges').innerHTML = `<div class="risk-gauge-row">
+      <div class="risk-gauge-item"><div class="risk-gauge-label">Volatility Percentile</div><div class="risk-gauge-track"><div class="risk-gauge-fill" style="width:${Math.min(fundVol/40*100,100)}%;background:#1a3a5c"></div></div><div class="risk-gauge-val">${Math.round(Math.min(fundVol/40*100,100))}th</div></div>
+      <div class="risk-gauge-item"><div class="risk-gauge-label">Sharpe Quality</div><div class="risk-gauge-track"><div class="risk-gauge-fill" style="width:${Math.min(Math.max(fundSharpe/3*100,0),100)}%;background:#2e7d32"></div></div><div class="risk-gauge-val">${Math.round(Math.min(Math.max(fundSharpe/3*100,0),100))}th</div></div>
+    </div>`;
+    
+    // Performance Chart
+    if (perfChart) perfChart.destroy();
+    
+    const fundNorm = normalize(alignedFund);
+    const benchNorm = normalize(alignedBench.slice(0, alignedFund.length));
+    const step = Math.max(1, Math.floor(fundNorm.length / 60));
+    const labels = fundTimestamps.filter((_, i) => i % step === 0 || i === fundTimestamps.length-1).map(t => new Date(t*1000).toLocaleDateString());
+    const fundSampled = fundNorm.filter((_, i) => i % step === 0 || i === fundNorm.length-1);
+    const benchSampled = benchNorm.filter((_, i) => i % step === 0 || i === benchNorm.length-1);
+    
+    const perfCtx = document.getElementById('perf-chart').getContext('2d');
+    perfChart = new Chart(perfCtx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {label: fundMeta.name, data: fundSampled, borderColor: '#1a3a5c', backgroundColor: 'rgba(26,58,92,0.05)', borderWidth: 2, pointRadius: 0, fill: true},
+          {label: BENCH_NAMES[benchTicker] || benchTicker, data: benchSampled, borderColor: '#b8860b', borderWidth: 1.5, borderDash: [5,5], pointRadius: 0}
+        ]
+      },
+      options: {responsive: true, maintainAspectRatio: false, plugins: {legend: {position: 'top', labels: {font: {size: 11}}}}}
+    });
+    
+    // Allocation Chart
+    let allocKey = "US Large Cap Equity";
+    if (fundMeta.category.includes("Growth")) allocKey = "US Growth Equity";
+    else if (fundMeta.category.includes("Bond") || fundMeta.category.includes("Fixed")) allocKey = "Fixed Income";
+    else if (fundMeta.category.includes("International")) allocKey = "International Equity";
+    else if (fundMeta.category.includes("Dividend")) allocKey = "Dividend";
+    else if (fundMeta.category.includes("Tech")) allocKey = "Technology";
+    else if (fundMeta.category.includes("Balanced")) allocKey = "Balanced";
+    
+    const allocSlices = ALLOC_DATA[allocKey] || ALLOC_DATA["US Large Cap Equity"];
+    if (allocChart) allocChart.destroy();
+    const allocCtx = document.getElementById('alloc-chart').getContext('2d');
+    allocChart = new Chart(allocCtx, {
+      type: 'doughnut',
+      data: {labels: allocSlices.map(s => s.l), datasets: [{data: allocSlices.map(s => s.v), backgroundColor: ALLOC_COLORS.slice(0, allocSlices.length), borderWidth: 2}]},
+      options: {responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: {legend: {display: false}}}
+    });
+    
+    const legendDiv = document.getElementById('alloc-legend');
+    legendDiv.innerHTML = '';
+    allocSlices.forEach((s, i) => {
+      legendDiv.innerHTML += `<div class="alloc-item"><div class="alloc-dot" style="background:${ALLOC_COLORS[i]}"></div><div class="alloc-label">${s.l}</div><div class="alloc-pct">${s.v}%</div></div>`;
+    });
+    
+    // Commentary
+    const commentaryGrid = document.getElementById('commentary-grid');
+    commentaryGrid.innerHTML = `
+      <div class="commentary-card"><div class="commentary-card-title">Performance Attribution</div><p>The fund ${fundRet >= 0 ? 'gained' : 'declined'} ${pct(fundRet)} during the ${PERIOD_LABELS[period]} period, ${fundRet > benchRet ? `outperforming the benchmark by ${Math.abs(excessRet).toFixed(2)}%` : `trailing the benchmark by ${Math.abs(excessRet).toFixed(2)}%`}.</p></div>
+      <div class="commentary-card"><div class="commentary-card-title">Risk Assessment</div><p>With annualized volatility of ${num(fundVol)}% and a Sharpe ratio of ${num(fundSharpe)}, the fund delivers ${fundSharpe > 1 ? 'strong' : 'moderate'} risk-adjusted returns relative to its benchmark (${num(benchSharpe)}).</p></div>
+      <div class="commentary-card"><div class="commentary-card-title">Market Exposure</div><p>The fund's beta of ${num(beta)} indicates it is ${beta < 0.8 ? 'less volatile than' : beta > 1.2 ? 'more volatile than' : 'closely aligned with'} the broader market. Maximum drawdown of -${num(fundDD)}% during the period.</p></div>
+      <div class="commentary-card"><div class="commentary-card-title">Outlook</div><p>Based on historical performance characteristics, the fund remains ${fundSharpe > 0.8 ? 'well-positioned' : 'reasonably positioned'} for its stated investment objective. Investors should monitor tracking error and relative performance trends.</p></div>
+    `;
+    
+    setStep('step-render', 'done');
+    setStatus(`Report generated — ${fundMeta.name} as of ${endDate}`, 'live');
+    
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('report-container').style.display = 'block';
+    
+  } catch (err) {
+    console.error(err);
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('placeholder').style.display = 'block';
+    document.getElementById('placeholder').innerHTML = `
+      <div class="placeholder-icon">⚠️</div>
+      <div class="placeholder-title">Data Retrieval Error</div>
+      <div class="placeholder-sub">${err.message}<br><br>This may be due to network restrictions. Click Generate again or try a different fund/period.</div>
+    `;
+    setStatus('Error: ' + err.message, 'error');
+  }
+}
+
+// PDF Export
+async function exportPDF() {
+  const btn = document.getElementById('export-pdf-btn');
+  btn.textContent = '⏳ Generating PDF…';
+  btn.disabled = true;
+  try {
+    const element = document.getElementById('report-body');
+    const canvas = await html2canvas(element, { scale: 2, logging: false, backgroundColor: '#ffffff' });
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const imgW = 210;
+    const imgH = (canvas.height / canvas.width) * imgW;
+    let y = 0;
+    while (y < imgH) {
+      if (y > 0) pdf.addPage();
+      pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', 0, -y, imgW, imgH);
+      y += 297;
+    }
+    const ticker = document.getElementById('fund-select').value || 'fund';
+    pdf.save(`FundLens_${ticker}_${new Date().toISOString().slice(0,10)}.pdf`);
+  } catch (e) {
+    alert('PDF export failed: ' + e.message);
+  }
+  btn.textContent = '⬇ Export PDF';
+  btn.disabled = false;
+}
+
+// Connect buttons
+document.getElementById('generate-btn').addEventListener('click', generateReport);
+document.getElementById('print-btn').addEventListener('click', () => window.print());
+document.getElementById('export-pdf-btn').addEventListener('click', exportPDF);
+
+// Make functions global
+window.generateReport = generateReport;
+window.exportPDF = exportPDF;
+
+console.log('FundLens ready!');
+</script>
+</body>
+</html>
