@@ -121,6 +121,9 @@ body { font-family: var(--sans); background: var(--paper); color: var(--ink); mi
 .data-badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 9px; font-weight: 600; margin-left: 10px; }
 .data-badge.live { background: #16a34a; color: white; }
 .data-badge.simulated { background: #f59e0b; color: white; }
+.data-badge.static { background: #64748b; color: white; }
+.data-quality-note { margin-top: 10px; font-size: 11px; color: var(--ink-muted); font-family: var(--mono); line-height: 1.6; }
+.text-left { text-align: left !important; font-family: var(--sans) !important; }
 @media (max-width: 900px) { .masthead, .control-panel, .status-bar, .main-content { padding-left: 20px; padding-right: 20px; } .exec-grid { grid-template-columns: repeat(2,1fr); } .commentary-grid, .allocation-layout, .footer-cols { grid-template-columns: 1fr; } }
 @media print { .masthead, .control-panel, .status-bar, .report-toolbar { display: none !important; } body { background: white; } .report-section { break-inside: avoid; } }
 .report-watermark { font-family: var(--mono); font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--ink-muted); text-align: right; padding: 8px 40px 0; border-top: 1px solid var(--rule); background: var(--paper-warm); }
@@ -180,13 +183,13 @@ body { font-family: var(--sans); background: var(--paper); color: var(--ink); mi
     <div class="placeholder-icon">📊</div>
     <div class="placeholder-title">Institutional Fund Report Generator</div>
     <div class="placeholder-sub">Select an asset manager, choose a fund, set your reporting period, and click Generate Report</div>
-    <div style="margin-top: 20px; font-size: 12px; color: #6b7280;">✓ 20+ Asset Managers | 500+ Funds | Live Data from Yahoo Finance</div>
+    <div style="margin-top: 20px; font-size: 12px; color: #6b7280;">✓ 20+ Asset Managers | Verified price data only | Static metadata clearly labelled</div>
   </div>
 
   <div id="loading-screen" class="loading-screen" style="display:none;">
     <div class="loading-spinner"></div>
     <div style="font-family:var(--serif);font-size:16px;color:var(--ink-muted);margin-bottom:4px;">Compiling report…</div>
-    <div style="font-size:12px;color:var(--ink-muted);">Fetching live data from Yahoo Finance</div>
+    <div style="font-size:12px;color:var(--ink-muted);">Fetching verified price history; report stops if market data is unavailable</div>
     <ul class="loading-steps" id="loading-steps">
       <li id="step-fund">○ Retrieving fund metadata</li>
       <li id="step-price">○ Fetching price history</li>
@@ -600,68 +603,120 @@ function formatAUM(aum) {
   return `$${aum.toFixed(0)}`;
 }
 
-async function fetchYahoo(ticker, period = '1y') {
-  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=${period}`;
-  try {
-    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-    const response = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
-    if (response.ok) {
+async function fetchYahoo(ticker, period = '5y') {
+  const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?interval=1d&range=${period}&events=history&includeAdjustedClose=true`;
+  const proxyUrls = [
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(yahooUrl)}`,
+    `https://corsproxy.io/?${encodeURIComponent(yahooUrl)}`
+  ];
+
+  let lastError = null;
+  for (const proxyUrl of proxyUrls) {
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 12000);
+      const response = await fetch(proxyUrl, { signal: controller.signal, cache: 'no-store' });
+      clearTimeout(timer);
+
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
-      if (data?.chart?.result?.[0]) return data.chart.result[0];
+      const result = data?.chart?.result?.[0];
+      const apiError = data?.chart?.error;
+      if (apiError) throw new Error(apiError.description || apiError.code || 'Yahoo API error');
+      if (result?.timestamp?.length) return result;
+      throw new Error('No price history returned');
+    } catch (e) {
+      lastError = e;
+      console.warn(`Market data fetch failed for ${ticker}:`, e);
     }
-  } catch(e) { console.log('Fetch failed:', e); }
-  throw new Error(`Unable to fetch data for ${ticker}`);
+  }
+
+  throw new Error(`Verified market data unavailable for ${ticker}. No simulated data was used. ${lastError ? lastError.message : ''}`);
+}
+
+function toISODate(ts) {
+  return new Date(ts * 1000).toISOString().slice(0, 10);
 }
 
 function extractPrices(result) {
   const timestamps = result.timestamp || [];
-  const prices = result.indicators?.adjclose?.[0]?.adjclose || result.indicators?.quote?.[0]?.close || [];
+  const quote = result.indicators?.quote?.[0] || {};
+  const adj = result.indicators?.adjclose?.[0]?.adjclose || [];
+  const close = quote.close || [];
   const clean = [];
-  for (let i = 0; i < timestamps.length && i < prices.length; i++) {
-    if (prices[i] != null && !isNaN(prices[i]) && prices[i] > 0) {
-      clean.push({ t: timestamps[i], p: prices[i] });
+
+  for (let i = 0; i < timestamps.length && i < Math.max(adj.length, close.length); i++) {
+    const price = adj[i] ?? close[i];
+    if (price != null && Number.isFinite(price) && price > 0) {
+      clean.push({ t: timestamps[i], date: toISODate(timestamps[i]), p: Number(price) });
     }
   }
-  return clean;
+
+  return clean.sort((a, b) => a.t - b.t);
+}
+
+function filterYTD(data) {
+  const startOfYear = new Date(new Date().getFullYear(), 0, 1).getTime() / 1000;
+  return data.filter(d => d.t >= startOfYear);
 }
 
 function filterByDays(data, days) {
   if (!days) return data;
-  const now = Date.now() / 1000;
-  const cutoff = now - (days * 86400);
+  const latest = data.length ? data[data.length - 1].t : Date.now() / 1000;
+  const cutoff = latest - (days * 86400);
   return data.filter(d => d.t >= cutoff);
 }
 
+function filterForPeriod(data, period) {
+  if (period === 'ytd') return filterYTD(data);
+  return filterByDays(data, PERIOD_DAYS[period]);
+}
+
+function alignByDate(fundData, benchData) {
+  const benchMap = new Map(benchData.map(d => [d.date, d]));
+  return fundData
+    .filter(f => benchMap.has(f.date))
+    .map(f => ({ date: f.date, t: f.t, fund: f.p, bench: benchMap.get(f.date).p }));
+}
+
+function seriesFromAligned(aligned, key) {
+  return aligned.map(d => d[key]);
+}
+
 function calcReturn(prices) {
-  if (prices.length < 2) return 0;
+  if (prices.length < 2) return NaN;
   return (prices[prices.length-1] - prices[0]) / prices[0] * 100;
 }
 
+function calcAnnualizedReturn(prices, firstTimestamp, lastTimestamp) {
+  if (prices.length < 2 || !firstTimestamp || !lastTimestamp || lastTimestamp <= firstTimestamp) return NaN;
+  const totalReturn = prices[prices.length - 1] / prices[0] - 1;
+  const years = (lastTimestamp - firstTimestamp) / (365.25 * 86400);
+  if (years <= 0) return NaN;
+  return (Math.pow(1 + totalReturn, 1 / years) - 1) * 100;
+}
+
 function calcVolatility(prices) {
-  if (prices.length < 5) return 0;
+  if (prices.length < 5) return NaN;
   const returns = [];
   for (let i = 1; i < prices.length; i++) {
-    if (prices[i-1] > 0) {
-      returns.push(Math.log(prices[i] / prices[i-1]));
-    }
+    if (prices[i-1] > 0) returns.push(Math.log(prices[i] / prices[i-1]));
   }
-  if (returns.length < 2) return 0;
+  if (returns.length < 2) return NaN;
   const mean = returns.reduce((a,b) => a + b, 0) / returns.length;
   const variance = returns.reduce((a,b) => a + Math.pow(b - mean, 2), 0) / (returns.length - 1);
   return Math.sqrt(variance) * Math.sqrt(252) * 100;
 }
 
-function calcSharpe(prices, rf = 0.045) {
-  const ret = calcReturn(prices) / 100;
+function calcSharpe(prices, firstTimestamp, lastTimestamp, rf = 0.045) {
+  const annRet = calcAnnualizedReturn(prices, firstTimestamp, lastTimestamp) / 100;
   const vol = calcVolatility(prices) / 100;
-  if (vol === 0) return 0;
-  const n = prices.length;
-  const annRet = Math.pow(1 + ret, 252 / n) - 1;
+  if (!Number.isFinite(annRet) || !Number.isFinite(vol) || vol === 0) return NaN;
   return (annRet - rf) / vol;
 }
 
 function calcDrawdown(prices) {
-  if (prices.length < 2) return 0;
+  if (prices.length < 2) return NaN;
   let peak = prices[0];
   let maxDD = 0;
   for (const p of prices) {
@@ -674,7 +729,7 @@ function calcDrawdown(prices) {
 
 function calcBeta(fundPrices, benchPrices) {
   const len = Math.min(fundPrices.length, benchPrices.length);
-  if (len < 10) return 1;
+  if (len < 10) return NaN;
   const fr = [], br = [];
   for (let i = 1; i < len; i++) {
     if (fundPrices[i-1] > 0 && benchPrices[i-1] > 0) {
@@ -682,7 +737,7 @@ function calcBeta(fundPrices, benchPrices) {
       br.push((benchPrices[i] - benchPrices[i-1]) / benchPrices[i-1]);
     }
   }
-  if (fr.length < 5) return 1;
+  if (fr.length < 5) return NaN;
   const bm = br.reduce((a,b) => a + b, 0) / br.length;
   const fm = fr.reduce((a,b) => a + b, 0) / fr.length;
   let cov = 0, bvar = 0;
@@ -690,13 +745,30 @@ function calcBeta(fundPrices, benchPrices) {
     cov += (fr[i] - fm) * (br[i] - bm);
     bvar += Math.pow(br[i] - bm, 2);
   }
-  return bvar === 0 ? 1 : cov / bvar;
+  return bvar === 0 ? NaN : cov / bvar;
 }
 
 function normalize(prices) {
   if (!prices.length) return [];
   const base = prices[0];
   return prices.map(p => p / base * 100);
+}
+
+function safeNum(value, d = 2, suffix = '') {
+  return Number.isFinite(value) ? `${value.toFixed(d)}${suffix}` : 'N/A';
+}
+
+function safePct(value, d = 2) {
+  return Number.isFinite(value) ? pct(value, d) : 'N/A';
+}
+
+function metricClass(value) {
+  if (!Number.isFinite(value)) return '';
+  return value >= 0 ? 'pos' : 'neg';
+}
+
+function enoughData(aligned, minPoints = 10) {
+  return Array.isArray(aligned) && aligned.length >= minPoints;
 }
 
 async function generateReport() {
@@ -710,57 +782,45 @@ async function generateReport() {
   if (!fundMeta) return;
   
   const benchTicker = fundMeta.bench;
-  const periodDays = PERIOD_DAYS[period];
-  const yahooRange = period === '1y' ? '1y' : (period === '3y' ? '3y' : (period === '5y' ? '5y' : '2y'));
+  const verifiedRange = '5y';
   
   document.getElementById('placeholder').style.display = 'none';
   document.getElementById('report-container').style.display = 'none';
   document.getElementById('loading-screen').style.display = 'block';
-  setStatus('Fetching live data...', 'loading');
-  
-  let fundPrices = null, benchPrices = null, fundTimestamps = null;
+  setStatus('Fetching verified price history...', 'loading');
+  ['step-fund','step-price','step-bench','step-calc','step-render'].forEach(id => setStep(id, 'pending'));
   
   try {
     setStep('step-fund', 'active');
+    const metadataAsOf = 'Static reference metadata — verify against issuer filings/factsheets before investment use';
     setStep('step-fund', 'done');
     
     setStep('step-price', 'active');
-    try {
-      const fundResult = await fetchYahoo(ticker, yahooRange);
-      const fundData = extractPrices(fundResult);
-      const filteredFund = periodDays ? filterByDays(fundData, periodDays) : fundData;
-      fundPrices = filteredFund.map(d => d.p);
-      fundTimestamps = filteredFund.map(d => d.t);
-      if (fundPrices.length < 10) throw new Error('Insufficient data');
-    } catch(e) {
-      const days = periodDays || 252;
-      fundPrices = [100];
-      for (let i = 1; i < days; i++) {
-        fundPrices.push(fundPrices[i-1] * (1 + 0.0005 + (Math.random() - 0.5) * 0.025));
-      }
-      fundTimestamps = Array.from({length: days}, (_, i) => (Date.now()/1000) - (days - i) * 86400);
-    }
+    const fundResult = await fetchYahoo(ticker, verifiedRange);
+    const fundDataAll = extractPrices(fundResult);
+    if (fundDataAll.length < 10) throw new Error(`Insufficient verified price history for ${ticker}`);
     setStep('step-price', 'done');
     
     setStep('step-bench', 'active');
-    try {
-      const benchResult = await fetchYahoo(benchTicker, yahooRange);
-      const benchData = extractPrices(benchResult);
-      const filteredBench = periodDays ? filterByDays(benchData, periodDays) : benchData;
-      benchPrices = filteredBench.map(d => d.p);
-      if (benchPrices.length < 10) throw new Error('Insufficient data');
-    } catch(e) {
-      const days = periodDays || 252;
-      benchPrices = [100];
-      for (let i = 1; i < days; i++) {
-        benchPrices.push(benchPrices[i-1] * (1 + 0.00045 + (Math.random() - 0.5) * 0.022));
-      }
-    }
+    const benchResult = await fetchYahoo(benchTicker, verifiedRange);
+    const benchDataAll = extractPrices(benchResult);
+    if (benchDataAll.length < 10) throw new Error(`Insufficient verified benchmark history for ${benchTicker}`);
     setStep('step-bench', 'done');
     
-    const minLen = Math.min(fundPrices.length, benchPrices.length);
-    const alignedFund = fundPrices.slice(-minLen);
-    const alignedBench = benchPrices.slice(-minLen);
+    const selectedFundData = filterForPeriod(fundDataAll, period);
+    const selectedBenchData = filterForPeriod(benchDataAll, period);
+    const aligned = alignByDate(selectedFundData, selectedBenchData);
+    if (!enoughData(aligned)) {
+      throw new Error(`Not enough overlapping trading days for ${ticker} and ${benchTicker} during ${PERIOD_LABELS[period]}.`);
+    }
+
+    const alignedFund = seriesFromAligned(aligned, 'fund');
+    const alignedBench = seriesFromAligned(aligned, 'bench');
+    const fundTimestamps = aligned.map(d => d.t);
+    const firstTimestamp = aligned[0].t;
+    const lastTimestamp = aligned[aligned.length - 1].t;
+    const dataAsOf = aligned[aligned.length - 1].date;
+    const fullAligned = alignByDate(fundDataAll, benchDataAll);
     
     setStep('step-calc', 'active');
     
@@ -769,12 +829,32 @@ async function generateReport() {
     const excessRet = fundRet - benchRet;
     const fundVol = calcVolatility(alignedFund);
     const benchVol = calcVolatility(alignedBench);
-    const fundSharpe = calcSharpe(alignedFund);
+    const fundSharpe = calcSharpe(alignedFund, firstTimestamp, lastTimestamp);
+    const benchSharpe = calcSharpe(alignedBench, firstTimestamp, lastTimestamp);
     const fundDD = calcDrawdown(alignedFund);
+    const benchDD = calcDrawdown(alignedBench);
     const beta = calcBeta(alignedFund, alignedBench);
     const curPrice = alignedFund[alignedFund.length-1];
     const prevPrice = alignedFund[alignedFund.length-2] || curPrice;
     const dayChg = (curPrice - prevPrice) / prevPrice * 100;
+    const navLabel = fundMeta.type === 'ETF' ? 'Latest Price' : 'Latest NAV';
+    const expensePeerDelta = 0.72 - fundMeta.expense;
+    const expenseText = expensePeerDelta >= 0 ? `${safeNum(expensePeerDelta, 2, '%')} below static peer avg` : `${safeNum(Math.abs(expensePeerDelta), 2, '%')} above static peer avg`;
+    
+    const trailingRows = [
+      { label: PERIOD_LABELS[period], aligned, annualized: ['3y','5y'].includes(period) },
+      { label: '3 Year (Annualized)', aligned: alignByDate(filterByDays(fundDataAll, 1095), filterByDays(benchDataAll, 1095)), annualized: true },
+      { label: '5 Year (Annualized)', aligned: fullAligned, annualized: true }
+    ].map(row => {
+      if (!enoughData(row.aligned, row.label.startsWith('5') ? 500 : 60)) return { ...row, available: false };
+      const f = seriesFromAligned(row.aligned, 'fund');
+      const b = seriesFromAligned(row.aligned, 'bench');
+      const first = row.aligned[0].t;
+      const last = row.aligned[row.aligned.length - 1].t;
+      const fundValue = row.annualized ? calcAnnualizedReturn(f, first, last) : calcReturn(f);
+      const benchValue = row.annualized ? calcAnnualizedReturn(b, first, last) : calcReturn(b);
+      return { ...row, available: true, fundValue, benchValue, excessValue: fundValue - benchValue };
+    });
     
     setStep('step-calc', 'done');
     setStep('step-render', 'active');
@@ -787,25 +867,27 @@ async function generateReport() {
     
     const badges = document.getElementById('rh-badges');
     badges.innerHTML = '';
-    [fundMeta.type, fundMeta.category, `Benchmark: ${BENCH_NAMES[benchTicker] || benchTicker}`, `Expense: ${fundMeta.expense}%`, `AUM: ${formatAUM(fundMeta.aum)}`].forEach(b => {
+    [fundMeta.type, fundMeta.category, `Benchmark: ${BENCH_NAMES[benchTicker] || benchTicker}`, `Price Data As Of: ${dataAsOf}`, `Metadata: Static`].forEach((b, idx) => {
       const badge = document.createElement('span');
-      badge.className = 'badge';
+      badge.className = idx === 3 ? 'badge badge-gold' : 'badge';
       badge.textContent = b;
       badges.appendChild(badge);
     });
     
-    // Executive Summary with Expense and AUM
+    // Executive Summary with verified/static distinction
     const execGrid = document.getElementById('exec-grid');
     execGrid.innerHTML = `
-      <div class="exec-stat"><div class="exec-stat-label">Fund Return</div><div class="exec-stat-value ${fundRet>=0?'pos':'neg'}">${pct(fundRet)}</div><div class="exec-stat-sub">${PERIOD_LABELS[period]}</div></div>
-      <div class="exec-stat"><div class="exec-stat-label">Benchmark Return</div><div class="exec-stat-value ${benchRet>=0?'pos':'neg'}">${pct(benchRet)}</div></div>
-      <div class="exec-stat"><div class="exec-stat-label">Excess Return</div><div class="exec-stat-value ${excessRet>=0?'pos':'neg'}">${pct(excessRet)}</div></div>
-      <div class="exec-stat"><div class="exec-stat-label">Current NAV</div><div class="exec-stat-value">$${curPrice.toFixed(2)}</div><div class="exec-stat-sub ${dayChg>=0?'pos':'neg'}">Day: ${pct(dayChg)}</div></div>
-      <div class="exec-stat"><div class="exec-stat-label">Expense Ratio</div><div class="exec-stat-value">${fundMeta.expense}%</div><div class="exec-stat-sub">Category Avg: 0.72%</div></div>
-      <div class="exec-stat"><div class="exec-stat-label">AUM</div><div class="exec-stat-value">${formatAUM(fundMeta.aum)}</div></div>
-      <div class="exec-stat"><div class="exec-stat-label">Volatility (Ann.)</div><div class="exec-stat-value">${num(fundVol)}%</div></div>
-      <div class="exec-stat"><div class="exec-stat-label">Sharpe Ratio</div><div class="exec-stat-value">${num(fundSharpe)}</div></div>
+      <div class="exec-stat"><div class="exec-stat-label">Fund Return</div><div class="exec-stat-value ${metricClass(fundRet)}">${safePct(fundRet)}</div><div class="exec-stat-sub">${PERIOD_LABELS[period]} | verified prices</div></div>
+      <div class="exec-stat"><div class="exec-stat-label">Benchmark Return</div><div class="exec-stat-value ${metricClass(benchRet)}">${safePct(benchRet)}</div><div class="exec-stat-sub">${benchTicker}</div></div>
+      <div class="exec-stat"><div class="exec-stat-label">Excess Return</div><div class="exec-stat-value ${metricClass(excessRet)}">${safePct(excessRet)}</div></div>
+      <div class="exec-stat"><div class="exec-stat-label">${navLabel}</div><div class="exec-stat-value">$${curPrice.toFixed(2)}</div><div class="exec-stat-sub ${metricClass(dayChg)}">Daily close: ${safePct(dayChg)}</div></div>
+      <div class="exec-stat"><div class="exec-stat-label">Expense Ratio</div><div class="exec-stat-value">${fundMeta.expense}%</div><div class="exec-stat-sub">Static metadata</div></div>
+      <div class="exec-stat"><div class="exec-stat-label">AUM</div><div class="exec-stat-value">${formatAUM(fundMeta.aum)}</div><div class="exec-stat-sub">Static metadata</div></div>
+      <div class="exec-stat"><div class="exec-stat-label">Volatility (Ann.)</div><div class="exec-stat-value">${safeNum(fundVol, 2, '%')}</div></div>
+      <div class="exec-stat"><div class="exec-stat-label">Sharpe Ratio</div><div class="exec-stat-value">${safeNum(fundSharpe)}</div></div>
     `;
+
+    document.getElementById('data-source-indicator').innerHTML = `<span class="data-badge live">VERIFIED PRICE DATA</span><span class="data-badge static">STATIC FUND METADATA</span><div class="data-quality-note">Price returns, volatility, drawdown and beta use adjusted close data from Yahoo Finance chart endpoints, aligned by trading date. No random or simulated price data is generated. Expense ratio, AUM and allocation are reference/static values and should be verified against issuer or regulatory sources.</div>`;
     
     // Fund Overview
     const overviewBody = document.getElementById('fund-overview-body');
@@ -813,40 +895,45 @@ async function generateReport() {
       <tr><td><strong>Fund Name</strong></td><td>${fundMeta.name}</td><td><strong>Ticker</strong></td><td>${ticker}</td></tr>
       <tr><td><strong>Asset Manager</strong></td><td>${manager}</td><td><strong>Fund Type</strong></td><td>${fundMeta.type}</td></tr>
       <tr><td><strong>Category</strong></td><td>${fundMeta.category}</td><td><strong>Benchmark</strong></td><td>${BENCH_NAMES[benchTicker] || benchTicker}</td></tr>
-      <tr><td><strong>Expense Ratio</strong></td><td><strong class="pos">${fundMeta.expense}%</strong> <span style="color:#6b7280;">(Low vs Category Avg 0.72%)</span></td><td><strong>AUM</strong></td><td>${formatAUM(fundMeta.aum)}</td></tr>
-      <tr><td><strong>Current NAV</strong></td><td>$${curPrice.toFixed(2)}</td><td><strong>1-Day Change</strong></td><td class="${dayChg>=0?'pos':'neg'}">${pct(dayChg)}</td></tr>
+      <tr><td><strong>Expense Ratio</strong></td><td>${fundMeta.expense}% <span style="color:#6b7280;">(${expenseText}; static)</span></td><td><strong>AUM</strong></td><td>${formatAUM(fundMeta.aum)} <span style="color:#6b7280;">(static)</span></td></tr>
+      <tr><td><strong>${navLabel}</strong></td><td>$${curPrice.toFixed(2)}</td><td><strong>Price Data As Of</strong></td><td>${dataAsOf}</td></tr>
+      <tr><td><strong>Data Quality</strong></td><td colspan="3" class="text-left">Verified adjusted close price history; ${aligned.length} overlapping observations aligned by date. ${metadataAsOf}.</td></tr>
     `;
     
-    // Performance Table
+    // Performance Table — real selected/3Y/5Y rows only
     const perfBody = document.getElementById('perf-table-body');
-    perfBody.innerHTML = `
-      <tr><td><strong>${PERIOD_LABELS[period]}</strong></td><td class="${fundRet>=0?'pos':'neg'}">${pct(fundRet)}</td><td class="${benchRet>=0?'pos':'neg'}">${pct(benchRet)}</td><td class="${excessRet>=0?'pos':'neg'}">${pct(excessRet)}</td></tr>
-      <tr><td><strong>3 Year (Annualized)</strong></td><td class="pos">${pct(fundRet * 0.9)}</td><td class="pos">${pct(benchRet * 0.88)}</td><td class="pos">${pct((fundRet * 0.9) - (benchRet * 0.88))}</td></tr>
-      <tr><td><strong>5 Year (Annualized)</strong></td><td class="pos">${pct(fundRet * 0.85)}</td><td class="pos">${pct(benchRet * 0.83)}</td><td class="pos">${pct((fundRet * 0.85) - (benchRet * 0.83))}</td></tr>
-    `;
+    perfBody.innerHTML = trailingRows.map(row => {
+      if (!row.available) {
+        return `<tr><td><strong>${row.label}</strong></td><td colspan="3" class="text-left">Unavailable: insufficient verified overlapping price history.</td></tr>`;
+      }
+      return `<tr><td><strong>${row.label}</strong></td><td class="${metricClass(row.fundValue)}">${safePct(row.fundValue)}</td><td class="${metricClass(row.benchValue)}">${safePct(row.benchValue)}</td><td class="${metricClass(row.excessValue)}">${safePct(row.excessValue)}</td></tr>`;
+    }).join('');
     
     // Risk Table
     const riskBody = document.getElementById('risk-table-body');
     riskBody.innerHTML = `
-      <tr><td><strong>Volatility (Annualized)</strong></td><td>${num(fundVol)}%</td><td>${num(benchVol)}%</td><td class="muted">${fundVol < benchVol ? 'Lower risk than benchmark' : 'Higher risk than benchmark'}</td></tr>
-      <tr><td><strong>Sharpe Ratio</strong></td><td>${num(fundSharpe)}</td><td>${num(calcSharpe(alignedBench))}</td><td class="muted">${fundSharpe > 1 ? 'Strong risk-adjusted returns' : 'Moderate risk-adjusted returns'}</td></tr>
-      <tr><td><strong>Max Drawdown</strong></td><td class="neg">-${num(fundDD)}%</td><td class="neg">-${num(calcDrawdown(alignedBench))}%</td><td class="muted">${fundDD < calcDrawdown(alignedBench) ? 'Better peak-to-trough' : 'Larger drawdown than benchmark'}</td></tr>
-      <tr><td><strong>Beta</strong></td><td>${num(beta)}</td><td>1.00</td><td class="muted">${beta < 0.8 ? 'Defensive' : beta > 1.2 ? 'Aggressive' : 'Market-aligned'}</td></tr>
+      <tr><td><strong>Volatility (Annualized)</strong></td><td>${safeNum(fundVol, 2, '%')}</td><td>${safeNum(benchVol, 2, '%')}</td><td class="muted">${Number.isFinite(fundVol) && Number.isFinite(benchVol) ? (fundVol < benchVol ? 'Lower realized volatility than benchmark' : 'Higher realized volatility than benchmark') : 'Insufficient data'}</td></tr>
+      <tr><td><strong>Sharpe Ratio</strong></td><td>${safeNum(fundSharpe)}</td><td>${safeNum(benchSharpe)}</td><td class="muted">${Number.isFinite(fundSharpe) ? (fundSharpe > 1 ? 'Strong risk-adjusted returns' : 'Moderate/low risk-adjusted returns') : 'Insufficient data'}</td></tr>
+      <tr><td><strong>Max Drawdown</strong></td><td class="neg">-${safeNum(fundDD, 2, '%')}</td><td class="neg">-${safeNum(benchDD, 2, '%')}</td><td class="muted">${Number.isFinite(fundDD) && Number.isFinite(benchDD) ? (fundDD < benchDD ? 'Better peak-to-trough loss than benchmark' : 'Larger peak-to-trough loss than benchmark') : 'Insufficient data'}</td></tr>
+      <tr><td><strong>Beta</strong></td><td>${safeNum(beta)}</td><td>1.00</td><td class="muted">${Number.isFinite(beta) ? (beta < 0.8 ? 'Defensive relative profile' : beta > 1.2 ? 'Aggressive relative profile' : 'Market-aligned relative profile') : 'Insufficient data'}</td></tr>
     `;
     
     // Risk gauges
+    const volScore = Number.isFinite(fundVol) ? Math.min(fundVol/40*100,100) : 0;
+    const sharpeScore = Number.isFinite(fundSharpe) ? Math.min(Math.max(fundSharpe/3*100,0),100) : 0;
+    const costScore = Math.min(Math.max((0.72 - fundMeta.expense)/0.72*100,0),100);
     document.getElementById('risk-gauges').innerHTML = `<div class="risk-gauge-row">
-      <div class="risk-gauge-item"><div class="risk-gauge-label">Volatility Percentile</div><div class="risk-gauge-track"><div class="risk-gauge-fill" style="width:${Math.min(fundVol/40*100,100)}%;background:#1a3a5c"></div></div><div class="risk-gauge-val">${Math.round(Math.min(fundVol/40*100,100))}th</div></div>
-      <div class="risk-gauge-item"><div class="risk-gauge-label">Sharpe Quality</div><div class="risk-gauge-track"><div class="risk-gauge-fill" style="width:${Math.min(Math.max(fundSharpe/3*100,0),100)}%;background:#2e7d32"></div></div><div class="risk-gauge-val">${Math.round(Math.min(Math.max(fundSharpe/3*100,0),100))}th</div></div>
-      <div class="risk-gauge-item"><div class="risk-gauge-label">Expense Ratio vs Peers</div><div class="risk-gauge-track"><div class="risk-gauge-fill" style="width:${Math.min((0.72 - Math.min(fundMeta.expense,0.72))/0.72*100,100)}%;background:#b8860b"></div></div><div class="risk-gauge-val">${Math.min(Math.round((0.72 - fundMeta.expense)/0.72*100),100)}% lower than avg</div></div>
+      <div class="risk-gauge-item"><div class="risk-gauge-label">Realized Volatility Gauge</div><div class="risk-gauge-track"><div class="risk-gauge-fill" style="width:${volScore}%;background:#1a3a5c"></div></div><div class="risk-gauge-val">${Math.round(volScore)} / 100</div></div>
+      <div class="risk-gauge-item"><div class="risk-gauge-label">Sharpe Quality Gauge</div><div class="risk-gauge-track"><div class="risk-gauge-fill" style="width:${sharpeScore}%;background:#2e7d32"></div></div><div class="risk-gauge-val">${Math.round(sharpeScore)} / 100</div></div>
+      <div class="risk-gauge-item"><div class="risk-gauge-label">Static Expense Advantage</div><div class="risk-gauge-track"><div class="risk-gauge-fill" style="width:${costScore}%;background:#b8860b"></div></div><div class="risk-gauge-val">${expenseText}</div></div>
     </div>`;
     
     // Performance Chart
     if (perfChart) perfChart.destroy();
     const fundNorm = normalize(alignedFund);
-    const benchNorm = normalize(alignedBench.slice(0, alignedFund.length));
+    const benchNorm = normalize(alignedBench);
     const step = Math.max(1, Math.floor(fundNorm.length / 60));
-    const labels = fundTimestamps.filter((_, i) => i % step === 0 || i === fundTimestamps.length-1).map(t => new Date(t*1000).toLocaleDateString());
+    const labels = aligned.filter((_, i) => i % step === 0 || i === aligned.length-1).map(d => d.date);
     const fundSampled = fundNorm.filter((_, i) => i % step === 0 || i === fundNorm.length-1);
     const benchSampled = benchNorm.filter((_, i) => i % step === 0 || i === benchNorm.length-1);
     
@@ -860,7 +947,7 @@ async function generateReport() {
       options: {responsive: true, maintainAspectRatio: false, plugins: {legend: {position: 'top', labels: {font: {size: 11}}}}}
     });
     
-    // Allocation Chart
+    // Allocation Chart — static category proxy, clearly labelled
     let allocKey = fundMeta.category;
     if (allocKey.includes("Growth")) allocKey = "US Growth Equity";
     else if (allocKey.includes("Fixed") || allocKey.includes("Bond")) allocKey = "Fixed Income";
@@ -882,7 +969,7 @@ async function generateReport() {
     });
     
     const legendDiv = document.getElementById('alloc-legend');
-    legendDiv.innerHTML = '';
+    legendDiv.innerHTML = '<div class="data-quality-note"><span class="data-badge static">STATIC CATEGORY PROXY</span><br>This allocation is a category-level estimate, not live fund holdings.</div>';
     allocSlices.forEach((s, i) => {
       legendDiv.innerHTML += `<div class="alloc-item"><div class="alloc-dot" style="background:${ALLOC_COLORS[i]}"></div><div class="alloc-label">${s.l}</div><div class="alloc-pct">${s.v}%</div></div>`;
     });
@@ -890,14 +977,17 @@ async function generateReport() {
     // Commentary
     const commentaryGrid = document.getElementById('commentary-grid');
     commentaryGrid.innerHTML = `
-      <div class="commentary-card"><div class="commentary-card-title">Performance Attribution</div><p>The fund returned ${pct(fundRet)} during the ${PERIOD_LABELS[period]} period, ${fundRet > benchRet ? `outperforming the benchmark by ${Math.abs(excessRet).toFixed(2)}%` : `trailing the benchmark by ${Math.abs(excessRet).toFixed(2)}%`}. With a low expense ratio of ${fundMeta.expense}%, cost efficiency remains a key advantage.</p></div>
-      <div class="commentary-card"><div class="commentary-card-title">Risk Assessment</div><p>Annualized volatility of ${num(fundVol)}% and Sharpe ratio of ${num(fundSharpe)} indicate ${fundSharpe > 1 ? 'strong' : 'moderate'} risk-adjusted returns. The fund's beta of ${num(beta)} suggests ${beta < 0.8 ? 'defensive' : beta > 1.2 ? 'aggressive' : 'market-aligned'} characteristics.</p></div>
-      <div class="commentary-card"><div class="commentary-card-title">Expense & Scale Analysis</div><p>With an expense ratio of ${fundMeta.expense}% (category average 0.72%) and AUM of ${formatAUM(fundMeta.aum)}, the fund offers significant scale advantages and cost efficiency. Lower expenses directly benefit long-term compounding.</p></div>
-      <div class="commentary-card"><div class="commentary-card-title">Outlook</div><p>Based on historical performance, the fund remains ${fundSharpe > 0.8 ? 'well-positioned' : 'reasonably positioned'} for its investment objective. The combination of ${fundMeta.expense < 0.20 ? 'low costs' : 'competitive expenses'} and ${fundMeta.aum > 5e10 ? 'substantial scale' : 'growing asset base'} supports continued institutional viability.</p></div>
+      <div class="commentary-card"><div class="commentary-card-title">Performance Attribution</div><p>The fund returned ${safePct(fundRet)} during the ${PERIOD_LABELS[period]} period, ${fundRet > benchRet ? `outperforming the benchmark by ${Math.abs(excessRet).toFixed(2)}%` : `trailing the benchmark by ${Math.abs(excessRet).toFixed(2)}%`}. This calculation uses adjusted-close prices aligned by date through ${dataAsOf}.</p></div>
+      <div class="commentary-card"><div class="commentary-card-title">Risk Assessment</div><p>Annualized volatility of ${safeNum(fundVol, 2, '%')} and Sharpe ratio of ${safeNum(fundSharpe)} indicate ${Number.isFinite(fundSharpe) && fundSharpe > 1 ? 'strong' : 'moderate/low'} risk-adjusted returns. The fund's beta of ${safeNum(beta)} suggests ${Number.isFinite(beta) ? (beta < 0.8 ? 'defensive' : beta > 1.2 ? 'aggressive' : 'market-aligned') : 'unavailable'} characteristics.</p></div>
+      <div class="commentary-card"><div class="commentary-card-title">Expense & Scale Analysis</div><p>Expense ratio (${fundMeta.expense}%) and AUM (${formatAUM(fundMeta.aum)}) are static reference metadata in this browser-only build. For production/institutional use, connect issuer, SEC, Morningstar, FactSet, Lipper or similar verified metadata feeds.</p></div>
+      <div class="commentary-card"><div class="commentary-card-title">Data Integrity</div><p>No simulated prices are used. If Yahoo Finance/proxy access fails, the report stops rather than showing random numbers. The benchmark comparison is aligned by exact trading date, avoiding mismatched observations.</p></div>
     `;
+
+    document.getElementById('data-status-footer').innerHTML = `Price data: Yahoo Finance chart endpoint via browser CORS proxy, adjusted close, as of ${dataAsOf}. Static metadata: embedded reference table; verify before investment use.`;
+    document.getElementById('report-timestamp').textContent = new Date().toLocaleString();
     
     setStep('step-render', 'done');
-    setStatus(`Report generated — ${fundMeta.name} | ER: ${fundMeta.expense}% | AUM: ${formatAUM(fundMeta.aum)}`, 'live');
+    setStatus(`Report generated with verified price data — ${fundMeta.name} | as of ${dataAsOf}`, 'live');
     
     document.getElementById('loading-screen').style.display = 'none';
     document.getElementById('report-container').style.display = 'block';
